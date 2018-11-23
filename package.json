@@ -1,0 +1,61 @@
+{
+  "name": "ranwall",
+  "version": "2.0.0",
+  "description": "App for set random wallpapers",
+  "homepage": "./",
+  "main": "public/electron.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "test": "react-scripts test",
+    "electron-dev": "concurrently \"BROWSER=none npm run start\" \"wait-on http://localhost:3000 && electron .\"",
+    "preelectron-pack": "npm run build",
+    "electron-pack": "build"
+  },
+  "postinstall": "electron-builder install-app-deps",
+  "dependencies": {
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-scripts": "2.1.1",
+    "auto-launch": "^5.0.1",
+    "follow-redirects": "^1.2.5",
+    "jimp": "^0.2.28",
+    "mkdirp": "^0.5.1",
+    "pify": "^3.0.0",
+    "ranwallpaperup": "^0.5.3",
+    "electron-is-dev": "^1.0.1"
+  },
+  "devDependencies": {
+    "concurrently": "^4.1.0",
+    "electron": "^3.0.10",
+    "electron-builder": "^20.36.2",
+    "wait-on": "^3.2.0"
+  },
+  "author": "Jaume Segarra <jaumesv.jmr@gmail.com>",
+  "license": "ISC",
+  "private": true,
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "build": {
+    "appId": "jaumesegarra.ranwall",
+    "files": [
+      "build/**/*"
+    ],
+    "directories": {
+      "buildResources": "resources"
+    },
+    "mac": {
+      "category": "public.app-category.utilities"
+    }
+  }
+}
