@@ -1,0 +1,38 @@
+.header{
+	position: relative;
+	height: 40px;
+	display: flex;
+	align-items: center;
+
+	h1{
+		-webkit-app-region: drag;
+		margin: 0px;
+		position: absolute;
+		display: flex;
+		justify-content: center;
+		font-size: 14px;
+		width: 100%;
+		cursor: default;
+		z-index: -1
+	}
+	
+	& > button{
+		cursor: pointer;
+	}
+
+	body:not(.windows) &{
+		button#refresh{
+			margin-left: auto;
+			margin-right: 5px
+		}
+	}
+
+	body.windows &{
+		flex-direction: row-reverse;
+
+		button#refresh{
+			margin-right: auto;
+			margin-left: 5px
+		}
+	} 
+}

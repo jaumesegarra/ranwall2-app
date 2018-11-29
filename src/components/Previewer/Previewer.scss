@@ -1,0 +1,45 @@
+.previewer{
+	border-radius: 5px;
+	width: 100%;
+	max-width: 800px;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+	min-height: 120px;
+	background-color: #9c9898;
+	position: relative;
+	overflow: hidden;
+	
+	&.loading{
+		animation: fadein 1s infinite linear;
+		animation-delay:0.2s;
+		height: calc(100vh - 50px);
+
+		.foot-buttons{
+			display: none !important;
+		}
+	}
+
+	.on-error{
+		position: absolute;
+		padding: 0 15px;
+		color: #e5e8e8;
+
+		h2{
+			margin: 20px 0 10px;
+		}
+
+		p{
+			margin: 0;
+		}
+	}
+}
+
+@keyframes fadein {
+	from {
+		opacity:0.55;
+	}
+	to {
+		opacity:0.9;
+	}
+}

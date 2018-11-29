@@ -1,0 +1,88 @@
+.header .controls{
+	display: flex;
+	align-items:center;
+	justify-content: center;
+	
+	button{
+		border: none;
+		padding: 0px;
+		cursor: default;
+		text-decoration: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	
+	body.light:not(.windows) &{
+		button{
+			opacity: .9;
+		}
+	}
+
+	body:not(.windows) &{
+		&:hover button{
+			opacity: 1;
+
+			span{
+				display: block;
+			}
+		}
+
+		button{
+			height: 12px;
+			width: 12px;
+			border-radius: 50%;
+			-webkit-transition: background-color .2s;
+			transition: background-color .2s;
+			font-weight: bold;
+			border: 1px solid;
+			
+			span{
+				font-size: 12px;
+				display: none;
+				opacity: .85;
+				position: relative;
+				top: -3px
+			}
+			
+			&#close{
+				margin-left: 3px; 
+				background-color: #f55157;
+				color: #3e0808;
+				border-color: #e0171f
+			}
+
+			&#minimize{
+				background-color: #f1c155;
+				color: #504610;
+				border-color: #bb8928
+			}
+
+			& + button{
+				margin-left: 6px
+			}
+		}
+	}
+
+	body.windows &{
+		flex-direction: row-reverse;
+		z-index: 1111;
+
+		button{
+			width: 45px;
+			height: 35px;
+			transition: all ease-in-out .2s;
+			color: #fff;
+			font-size: 16px;
+			background: none;
+
+			&:not(#close):hover{
+				background-color: #2f2f2ff0;
+			}
+
+			&#close:hover{
+				background-color: #af0b0b;
+			}
+		}
+	}
+}
