@@ -1,5 +1,6 @@
-import Native, { MACOS } from './native.js';
-import WindowManager from './windowmanager.js';
+import Native, { MACOS } from './native';
+import WindowManager from './windowmanager';
+import ConfigManager from './configmanager';
 
 const { app, Menu, Tray } = window.require('electron').remote;
 
@@ -21,9 +22,7 @@ const OPTIONS = [
 	},
 	{
 		label: 'Configuration', 
-		click: () => {
-
-		}
+		click: ConfigManager.openWindow
 	},
 	{
 		label: 'Check for updates', 

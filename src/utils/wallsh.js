@@ -1,4 +1,4 @@
-import { Native, MACOS } from './native.js';
+import { Native, MACOS } from './native';
 
 const path = window.require('path');
 const childProcess = window.require('child_process');

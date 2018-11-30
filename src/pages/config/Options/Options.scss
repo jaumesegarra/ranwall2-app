@@ -1,0 +1,47 @@
+.config .options{
+	height: calc(100% - 60px);
+	position: fixed;
+	overflow: auto;
+
+	table{
+		width: calc(100% - 25px);
+	}
+
+	h2{
+		text-align: right;
+		font-size: 15px;
+		padding: 5px 17px;
+	}
+
+	.config-option {
+		min-width: 200px;
+		margin-bottom: 15px;
+		margin-top: 7px;
+
+		span.x {
+			font-size: 12px;
+			font-weight: bold;
+			margin: 0 3px;
+		}
+
+		span.info {
+			position: relative;
+			top: 7px;
+			font-size: 10px;
+			color: #444;
+			display:block
+		}
+
+		label{
+			font-size: 14px;
+			&.block{
+				display: block;
+				margin-bottom: 6px;
+			}
+		}
+
+		#resolution_x, #resolution_y{
+			width: 50px;
+		}
+	}
+}

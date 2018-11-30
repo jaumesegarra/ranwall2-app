@@ -5,10 +5,14 @@ export const WIN32 = 1;
 export const WIN64 = 2;
 
 export default class Native {
+	static isDev(){
+		return (window.__dirname.indexOf("node_modules") !== -1);
+	}
+
 	static getResource(name){
 		let fpath = window.__dirname;
 
-		if(fpath.indexOf("node_modules") !== -1)
+		if(Native.isDev())
 			fpath = path.join(fpath.slice(0, fpath.indexOf("node_modules")), 'public');
 		
 		return path.join(fpath, name);

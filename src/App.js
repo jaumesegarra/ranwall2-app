@@ -1,48 +1,20 @@
 import React from 'react';
-import { connect } from 'react-redux';
+
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import MainPage from './pages/main/Main';
+import ConfigPage from './pages/config/Config';
 
 import './App.css';
 
-import Header from './components/Header/Header';
-import Previewer from './components/Previewer/Previewer';
-
-const mapStateToProps = state => {
-  return {
-    config: state.config
-  }
-}
-
-class App extends React.Component {
-  constructor(props){
-    super(props);
-
-    this.changeTheme(props.config.lightTheme);
-  }
-
-  shouldComponentUpdate = (nextProps, nextState) => {
-    return nextProps.config.lightTheme !== this.props.config.lightTheme;
-  }
-
-  changeTheme(isLight){
-    if(isLight)
-      document.body.classList.add('light');
-    else
-      document.body.classList.remove('light');
-  }
-
-  componentDidUpdate(prevProps, prevState){
-    if(prevProps.config.lightTheme !== this.props.config.lightTheme)
-      this.changeTheme(this.props.config.lightTheme)
-  }
-
+export default class App extends React.PureComponent {
   render() {
     return (
-            <div className="app">
-            <Header />
-            <Previewer />
-            </div>
+            <Router>
+              <div>
+                <Route path="/" exact component={MainPage} />
+                <Route path="/config" component={ConfigPage} />
+              </div>
+            </Router>
     );
   }
 }
-
-export default connect(mapStateToProps)(App);

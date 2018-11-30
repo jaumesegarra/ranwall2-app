@@ -1,7 +1,7 @@
 import React from 'react';
 import './Controls.scss';
 import Template from './Controls.jsx';
-import WindowManager from '../../../utils/windowmanager.js';
+import WindowManager from '../../../../utils/windowmanager';
 
 const { app } = window.require('electron').remote;
 

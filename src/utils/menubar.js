@@ -1,3 +1,5 @@
+import ConfigManager from './configmanager';
+
 const { app, Menu } = window.require('electron').remote;
 
 const MENU_OPTIONS = [{
@@ -17,9 +19,7 @@ const MENU_OPTIONS = [{
 	},
 	{
 		label: 'Configuration...',
-		click: () => {
-
-		}
+		click: ConfigManager.openWindow
 	},
 	{
 		type: 'separator'

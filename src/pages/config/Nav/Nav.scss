@@ -1,0 +1,8 @@
+.config .nav{
+	border-bottom: 1px dashed #a7a2a2;
+	padding: 0px 5px 15px 0px;
+
+	a + a {
+		margin-left: 5px
+	} 
+}

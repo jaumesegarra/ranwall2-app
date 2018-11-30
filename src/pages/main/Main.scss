@@ -1,0 +1,14 @@
+.main{
+	padding: 0px 10px 20px 10px;
+	overflow: hidden;
+	color: #fff;
+	background-color: rgba(35, 42, 47, 0.98); 
+	border-color: #2d2828 !important;
+
+	body.light &{
+		color: #777;
+		background-color: rgba(246, 247, 247, 0.99);
+		background-image: url('../../blur.png');
+		border-color: #dedede !important;
+	}
+}

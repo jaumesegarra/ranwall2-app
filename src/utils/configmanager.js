@@ -1,5 +1,11 @@
 import store from '../store';
 import { loadConfig } from '../actions/config';
+import Native from './native';
+
+const { BrowserWindow } = window.require('electron').remote;
+const path = window.require("path");
+
+let configWindow;
 
 export default class ConfigManager {
 	static localToState(){
@@ -11,5 +17,29 @@ export default class ConfigManager {
 
 	static watcher(){
 		window.addEventListener('storage', ConfigManager.localToState);
+	}
+
+	static openWindow(){
+		if(!configWindow){
+			configWindow = new BrowserWindow({
+				title: 'ranwall: Configuration',
+				width: 485,
+				height: 310,
+				resizable:false,
+				show: false
+			});
+			configWindow.loadURL(Native.isDev() ? 'http://localhost:3000/config' : `file://${path.join(__dirname, '../public/index.html')}`);
+
+			if(Native.isDev())
+    			configWindow.openDevTools();
+
+			configWindow.once('ready-to-show', () => {
+				configWindow.show()
+			})
+
+			configWindow.on('closed', function () {
+				configWindow = undefined;
+			})
+		}else configWindow.focus();
 	}
 }

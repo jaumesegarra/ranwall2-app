@@ -1,5 +1,8 @@
+import Native, { MACOS } from '../utils/native';
+
 let defaultState = {
-	lightTheme: false
+	darkTheme: true,
+	autoDetectTheme: (Native.getSystem() === MACOS) // for macos
 }
 
 export default (state = defaultState, action) => {

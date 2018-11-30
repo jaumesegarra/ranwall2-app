@@ -2,7 +2,7 @@ import React from 'react';
 
 import Controls from './Controls/Controls';
 
-export default () => (
+export default (openConfig) => (
    <div className="header">
    		<Controls />
 
@@ -11,7 +11,7 @@ export default () => (
    		<button id="refresh" title="Refresh">
    			<i className="fa fa-refresh"></i>
    		</button>
-        <button id="config" title="Configuration">
+        <button id="config" title="Configuration" onClick={openConfig}>
         	<i className="fa fa-cog"></i>
         </button>
    </div>

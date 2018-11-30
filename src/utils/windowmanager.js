@@ -1,4 +1,4 @@
-import Native from './native.js';
+import Native from './native';
 import store from '../store';
 import { setProperty } from '../actions/config';
 
@@ -67,11 +67,13 @@ export default class WindowManager{
 	}
 
 	static autoChangeTheme(){
-
 		systemPreferences.subscribeNotification(
 		  'AppleInterfaceThemeChangedNotification',
 		  function theThemeHasChanged () {
-		    store.dispatch(setProperty("lightTheme", !systemPreferences.isDarkMode()));
+		  	let allowAutoChange = store.getState().config.autoDetectTheme;
+
+		  	if(allowAutoChange)
+		    	store.dispatch(setProperty("darkTheme", systemPreferences.isDarkMode()));
 		  }
 		)
 	}
