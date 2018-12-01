@@ -15,6 +15,7 @@ function createWindow () {
   	transparent: true,
   	title: "ranwall",
   	icon: "./icon.ico",
+    skipTaskbar: true,
   	frame: false,
     show:false
   })
@@ -23,10 +24,6 @@ function createWindow () {
 
   if(isDev)
     mainWindow.openDevTools();
-
-  mainWindow.once('ready-to-show', () => {
-    mainWindow.show()
-  })
 
   mainWindow.on('closed', function () {
     app.quit();

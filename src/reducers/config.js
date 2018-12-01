@@ -1,9 +1,14 @@
 import Native, { MACOS } from '../utils/native';
 
 let defaultState = {
+	launchAtStartup: false,
+	hideAtLaunch: true,
 	darkTheme: true,
 	autoDetectTheme: (Native.getSystem() === MACOS) // for macos
 }
+
+let localData = localStorage.getItem("config");
+if(localData) defaultState = JSON.parse(localData);
 
 export default (state = defaultState, action) => {
 	switch(action.type){

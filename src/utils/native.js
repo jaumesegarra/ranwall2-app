@@ -24,4 +24,17 @@ export default class Native {
 
 		return (os === "darwin") ? MACOS : ((os === "win32" && arch === "x64") ? WIN64 : WIN32)
 	}
+
+	static getAppPath(){
+		let stPath = window.process.execPath;
+
+		if (Native.getSystem() === MACOS) {
+			stPath = stPath.split("/Contents/");
+			stPath = stPath[0];
+		}
+
+		return stPath;
+	}
+
+	
 }

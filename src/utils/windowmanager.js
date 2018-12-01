@@ -3,6 +3,7 @@ import store from '../store';
 import { setProperty } from '../actions/config';
 
 const { app, systemPreferences } = window.require('electron').remote;
+const autoLaunch = window.require("auto-launch");
 
 export default class WindowManager{
 	
@@ -76,5 +77,28 @@ export default class WindowManager{
 		    	store.dispatch(setProperty("darkTheme", systemPreferences.isDarkMode()));
 		  }
 		)
+	}
+
+	static checkIfLaunchAtStartup(){
+		new autoLaunch({
+			name: 'ranwall',
+			path: Native.getAppPath(),
+			isHidden: true
+		}).isEnabled().then(function(isEnabled){
+			store.dispatch(setProperty('launchAtStartup', isEnabled));
+		})
+	}
+
+	static launchAtStartup(isEnabled){
+		let ranwallAutoLauncher = new autoLaunch({
+			name: 'ranwall',
+			path: Native.getAppPath(),
+			isHidden: true
+		});
+
+		if(isEnabled)
+			ranwallAutoLauncher.enable();
+		else
+			ranwallAutoLauncher.disable(); 
 	}
 }

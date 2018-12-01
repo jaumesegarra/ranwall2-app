@@ -22,6 +22,8 @@ class MainPage extends React.Component {
   constructor(props){
     super(props);
 
+    WindowManager.checkIfLaunchAtStartup();
+    
     if(Native.getSystem() === MACOS){
       MenuBar.create();
       WindowManager.autoChangeTheme();
@@ -29,10 +31,12 @@ class MainPage extends React.Component {
 
     TrayMenu.create();
     WindowManager.overlayMinimizeEvent();
-    ConfigManager.localToState();
     ConfigManager.watcher();
 
     this.changeTheme(props.config.darkTheme);
+
+    if(!this.props.config.hideAtLaunch)
+      WindowManager.show();
   }
 
   componentDidMount = () => {

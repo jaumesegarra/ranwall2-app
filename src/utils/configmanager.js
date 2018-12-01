@@ -28,7 +28,7 @@ export default class ConfigManager {
 				resizable:false,
 				show: false
 			});
-			configWindow.loadURL(Native.isDev() ? 'http://localhost:3000/config' : `file://${path.join(__dirname, '../public/index.html')}`);
+			configWindow.loadURL((Native.isDev() ? 'http://localhost:3000' : `file://${Native.getResource('index.html')}`) + '#config');
 
 			if(Native.isDev())
     			configWindow.openDevTools();
