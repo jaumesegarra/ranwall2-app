@@ -16,13 +16,14 @@
   },
   "postinstall": "electron-builder install-app-deps",
   "dependencies": {
+    "auto-launch": "^5.0.5",
+    "delete": "^1.1.0",
     "electron-is-dev": "^1.0.1",
-    "follow-redirects": "^1.2.5",
     "jimp": "^0.2.28",
     "mkdirp": "^0.5.1",
     "pify": "^3.0.0",
     "ranwallpaperup": "^0.5.3",
-    "auto-launch": "^5.0.5"
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "@babel/core": "7.1.0",
@@ -73,6 +74,7 @@
     "react-redux": "^5.1.1",
     "redux": "^4.0.1",
     "resolve": "1.8.1",
+    "rxjs": "^6.3.3",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.0",
     "terser-webpack-plugin": "1.1.0",
@@ -106,6 +108,7 @@
         "from": "build",
         "to": "public",
         "filter": [
+          "!tmpAppFolder",
           "**/*"
         ]
       }
@@ -114,10 +117,7 @@
       "buildResources": "resources"
     },
     "mac": {
-      "category": "public.app-category.utilities",
-      "extendInfo": {
-        "LSUIElement": 1
-      }
+      "category": "public.app-category.utilities"
     }
   },
   "jest": {

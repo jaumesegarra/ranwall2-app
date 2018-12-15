@@ -1,6 +1,5 @@
 .config .options{
-	height: calc(100% - 60px);
-	position: fixed;
+	height: calc(100vh - 53px);
 	overflow: auto;
 
 	table{
@@ -34,14 +33,31 @@
 
 		label{
 			font-size: 14px;
-			&.block{
+
+			&.block span{
 				display: block;
 				margin-bottom: 6px;
 			}
 		}
-
-		#resolution_x, #resolution_y{
-			width: 50px;
+		
+		* + button{
+			margin-left: 5px
 		}
+
+		&.resolution{
+			input{
+				width: 50px;
+			}
+
+			span.x{
+				display: inline-block;
+			}
+		}
+	}
+
+	.space{
+		display: block;
+		width: 1px;
+		height: 5px;
 	}
 }

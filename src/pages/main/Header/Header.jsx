@@ -2,13 +2,13 @@ import React from 'react';
 
 import Controls from './Controls/Controls';
 
-export default (openConfig) => (
+export default (newWallpaper, openConfig) => (
    <div className="header">
    		<Controls />
 
    		<h1><img src="logoMark.png" title="ranwall: created by Jaume Segarra" alt="Logo"/></h1>
 
-   		<button id="refresh" title="Refresh">
+   		<button id="refresh" title="Refresh" onClick={newWallpaper}>
    			<i className="fa fa-refresh"></i>
    		</button>
         <button id="config" title="Configuration" onClick={openConfig}>

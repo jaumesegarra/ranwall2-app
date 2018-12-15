@@ -1,5 +1,8 @@
+import store from '../store';
+
 import Native, { MACOS } from './native';
 import WindowManager from './windowmanager';
+import WallpaperManager from './wallpapermanager';
 import ConfigManager from './configmanager';
 
 const { app, Menu, Tray } = window.require('electron').remote;
@@ -8,9 +11,9 @@ const IMAGE = `./trayIcon_${(Native.getSystem() === MACOS) ? 'macos' : 'win'}.pn
 const OPTIONS = [
 	{
 		label: 'Set new wallpaper!', 
-		accelerator: 'Shift+CmdOrCtrl+W',
+		accelerator: store.getState().config.magicShortcutKeys,
 		click: () => { 
-		
+			WallpaperManager.new(true, true);
 		}
 	},
 	{

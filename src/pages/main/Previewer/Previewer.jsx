@@ -1,15 +1,15 @@
 import React from 'react'; 
 
-export default (wallpaper, hasError) => (
-    <div className="previewer loading">
+export default (isLoading, wallpaperPath, onLoad, hasError) => (
+    <div className={`previewer ${(isLoading) ? 'loading' : ''} ${(hasError) ? 'hasError' : ''}`}>
     	{
-    		wallpaper.status === 0 && (<img src="" alt="Current download wallpaper"/>)
+    		wallpaperPath && (<img src={wallpaperPath} alt="Current downloaded wallpaper" onLoad={onLoad} onMouseDown={() => false}/>)
     	}
     	
     	{
     		hasError &&
 		    	( 
-		    	<div class="on-error">
+		    	<div className="on-error">
 		            <h2>Error trying load wallpaper</h2>
 		            <p>Will be retry at 10 seconds automatically.</p>
 		        </div>

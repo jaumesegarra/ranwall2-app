@@ -1,8 +1,14 @@
-const path = require('path');
+import { Observable } from 'rxjs';
+
+const path = window.require('path');
+const fs = window.require('fs');
 
 export const MACOS = 0;
 export const WIN32 = 1;
 export const WIN64 = 2;
+
+export const APP_FOLDER_NAME = '.ranwall2';
+export const DEV_APP_FOLDER_NAME = 'tmpAppFolder';
 
 export default class Native {
 	static isDev(){
@@ -25,6 +31,10 @@ export default class Native {
 		return (os === "darwin") ? MACOS : ((os === "win32" && arch === "x64") ? WIN64 : WIN32)
 	}
 
+	static getScreenResolution(){
+		return [window.screen.width, window.screen.height];
+	}
+
 	static getAppPath(){
 		let stPath = window.process.execPath;
 
@@ -36,5 +46,60 @@ export default class Native {
 		return stPath;
 	}
 
-	
+	static getAppFolder(){
+		let folder = null;
+
+		if(Native.isDev())
+			folder = Native.getResource(DEV_APP_FOLDER_NAME);
+		else 
+			folder = (window.process.env[(Native.getSystem() === WIN32 || Native.getSystem() === WIN64) ? 'USERPROFILE' : 'HOME'])+"/"+APP_FOLDER_NAME;
+		
+		return folder;
+	}
+
+	static checkAppFolder(){
+		let folder = Native.getAppFolder();
+
+		function finish(obs, hasError){
+			if(!hasError)
+				obs.error(hasError);
+			else
+				obs.next(true);
+
+			obs.complete();
+		}
+
+		return Observable.create(obs => {
+			if(fs.existsSync(folder)){
+				Native.clearAppFolder().subscribe(res => finish(obs), err => finish(obs, 'Error clearing folder'));
+			}else{
+				window.require('mkdirp')(folder, function (err) {
+					if (err) 
+						finish(obs, 'Error creating folder');
+					else
+						finish(obs);
+				});
+			}
+		});
+	}
+
+	static clearAppFolder(){
+		let del = window.require('delete');
+		let folder = Native.getAppFolder();
+
+		return Observable.create(obs => {
+			let currentWallpaper = localStorage.getItem("currentWallpaper");
+
+			let arrDeletes = [`${folder}/*.jpg`];
+			if(currentWallpaper) arrDeletes.push(`!${folder}/${currentWallpaper}.jpg`);
+
+			del(arrDeletes, {force: true}, function(err, deleted) {
+				if (err)
+					obs.error('Error removing a file:', err); 
+
+				obs.next(deleted);
+				obs.complete();
+			});
+		});
+	}
 }

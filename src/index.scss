@@ -33,23 +33,34 @@ button, input[type="button"]{
 }
 
 .button {
+	@mixin with-color($backgroundColor, $textColor) {
+		background-color: $backgroundColor;
+		color: $textColor;
+
+		&:active{
+			opacity: .8;
+		}
+
+		&:hover{
+			background-color: lighten($backgroundColor, .5%);
+			color: darken($textColor, .5%);
+		}
+	};
+
 	border: 0px;
-	background-color: #007aff;
-	color: #fff;
+	@include with-color(#007aff, #fff);
 	cursor: pointer;
 	font-size: 14px;
 	outline: none;
 	text-transform: uppercase;
 	text-decoration: none;
-	
+
 	&.light {
-		background-color: #3e94f1;
-		opacity: 0.9;
+		@include with-color(#3e94f1, #fff);
 
 		&.very{
-			background-color: #f5f5f5;
+			@include with-color(#f5f5f5, #4e88c5);
 			border-color: #b3b3b3 !important;
-			color: #4e88c5;
 		}
 	}
 
@@ -59,20 +70,15 @@ button, input[type="button"]{
 	}
 
 	&.grey {
-		background-color: #a0a0a0;
+		@include with-color(#a0a0a0, #fff);
 
 		&.light{
-			background-color: #d6d6d6;
-			color: #000
+			@include with-color(#d6d6d6, #444);
 		}
 	}
 
 	&[disabled]{
 		cursor: default;
-	}
-
-	&:hover{
-		opacity: 0.95;
 	}
 
 	body:not(.windows) &{
@@ -84,5 +90,98 @@ button, input[type="button"]{
 	body.windows &{
 		border-radius: 4px;
 		padding: 4px 8px;
+	}
+}
+
+input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea{
+	&::selection {
+		background: #ddd;
+	}
+
+	padding: 4px 10px;
+	border: 1px solid #ccc;
+	font-size: 14px;
+
+	&:focus{
+		outline:none;
+		border-color: #bbb 
+	}
+	
+	body:not(.windows) &{
+		border-radius: 20px;
+	}
+
+	body.windows &{
+		border-radius: 4px;
+	}
+}
+
+
+input[type="number"]{
+	padding-right: 0px;
+}
+
+.select-wrapper{
+	border: 1px solid #ccc;
+	background-color: #fff;
+	text-align: center;
+	padding: 5px 0;
+	overflow: hidden;
+
+	select{
+		font-size: 14px;
+		border:0px;
+		width: calc(100% - 10px);
+		background: none;
+
+		&:focus{
+			outline:none;
+		}
+	}
+
+	select[multiple]{
+		height: auto;
+		overflow: hidden;
+
+		& > option{
+			padding: 9px;
+		}
+	}
+
+	body:not(.windows) &{
+		border-radius: 20px;
+
+		select[multiple]{
+			& > option{
+				&:first-child{
+					border-top-left-radius: 15px;
+					border-top-right-radius: 15px;
+				}
+
+				&:last-child{
+					border-bottom-left-radius: 15px;
+					border-bottom-right-radius: 15px;
+				}
+			}
+		}
+	}
+
+	body.windows &{
+		border-radius: 2px;
+
+		select[multiple]{
+			& > option{
+
+				&:first-child{
+					border-top-left-radius: 4px;
+					border-top-right-radius: 4px;
+				}
+
+				&:last-child{
+					border-bottom-left-radius: 4px;
+					border-bottom-right-radius: 4px;
+				}
+			}
+		}		
 	}
 }

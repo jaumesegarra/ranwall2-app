@@ -6,6 +6,7 @@ import MenuBar from '../../utils/menubar';
 import TrayMenu from '../../utils/traymenu';
 import WindowManager from '../../utils/windowmanager';
 import ConfigManager from '../../utils/configmanager';
+import WallpaperManager from '../../utils/wallpapermanager';
 
 import './Main.scss';
 
@@ -23,6 +24,7 @@ class MainPage extends React.Component {
     super(props);
 
     WindowManager.checkIfLaunchAtStartup();
+    WindowManager.registerMagicShortcut();
     
     if(Native.getSystem() === MACOS){
       MenuBar.create();
@@ -35,8 +37,12 @@ class MainPage extends React.Component {
 
     this.changeTheme(props.config.darkTheme);
 
-    if(!this.props.config.hideAtLaunch)
-      WindowManager.show();
+    if(this.props.config.hideAtLaunch)
+      WindowManager.hide();
+    else
+      MAIN_WINDOW.show();
+
+    WallpaperManager.new();
   }
 
   componentDidMount = () => {

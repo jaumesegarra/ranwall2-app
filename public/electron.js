@@ -15,14 +15,13 @@ function createWindow () {
   	transparent: true,
   	title: "ranwall",
   	icon: "./icon.ico",
-    skipTaskbar: true,
   	frame: false,
-    show:false
+    show: false
   })
 
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../public/index.html')}`);
 
-  if(isDev)
+  //if(isDev)
     mainWindow.openDevTools();
 
   mainWindow.on('closed', function () {

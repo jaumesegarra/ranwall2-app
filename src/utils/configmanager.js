@@ -3,16 +3,15 @@ import { loadConfig } from '../actions/config';
 import Native from './native';
 
 const { BrowserWindow } = window.require('electron').remote;
-const path = window.require("path");
 
 let configWindow;
 
 export default class ConfigManager {
+
 	static localToState(){
 		let data = localStorage.getItem("config");
-		if(data){
+		if(data)
 			store.dispatch(loadConfig(JSON.parse(data)));
-		}
 	}
 
 	static watcher(){
@@ -26,6 +25,7 @@ export default class ConfigManager {
 				width: 485,
 				height: 310,
 				resizable:false,
+				fullscreen: false,
 				show: false
 			});
 			configWindow.loadURL((Native.isDev() ? 'http://localhost:3000' : `file://${Native.getResource('index.html')}`) + '#config');

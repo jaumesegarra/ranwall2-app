@@ -5,8 +5,7 @@
 	height: auto;
 	display: block;
 	margin: 0 auto;
-	min-height: 120px;
-	background-color: #9c9898;
+	background-color: #4c4c4c;
 	position: relative;
 	overflow: hidden;
 	
@@ -19,7 +18,17 @@
 			display: none !important;
 		}
 	}
+	
+	&.hasError{
+		min-height: 120px;
+	}
 
+	img{
+		max-width: 100%;
+		height: auto;
+		display: block;
+	}
+	
 	.on-error{
 		position: absolute;
 		padding: 0 15px;

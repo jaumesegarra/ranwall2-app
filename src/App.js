@@ -8,11 +8,11 @@ import './App.css';
 export default class App extends React.PureComponent {
 
   render() {
-    switch (window.location.hash.replace('#', '')) {
-      case "config":
+      switch (window.location.hash.replace('#', '')) {
+        case "config":
         return (<ConfigPage />);
-      default:
+        default:
         return (<MainPage />);
-    }
+      }
   }
 }

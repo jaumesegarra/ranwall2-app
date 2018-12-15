@@ -1,24 +1,27 @@
-import Native from './native';
+import Native, { MACOS } from './native';
+import WallpaperManager from './wallpapermanager';
 import store from '../store';
-import { setProperty } from '../actions/config';
+import { setProperties } from '../actions/config';
 
-const { app, systemPreferences } = window.require('electron').remote;
+const { app, systemPreferences, globalShortcut } = window.require('electron').remote;
 const autoLaunch = window.require("auto-launch");
 
 export default class WindowManager{
 	
 	static showNotification(title, text, onclick = null, onclose = null, autoclose = true){
-		let notification = new Notification(title, {
-			body: text,
-			icon: Native.getResource("./icon.ico")
-		});
+		let notificationConfig = { body: text };
+		
+		if(Native.getSystem() !== MACOS)
+			notificationConfig.icon = Native.getResource("./icon.ico");
+
+		let notification = new Notification(title, notificationConfig);
 
 		notification.onclick = () => {
 			notification.close();
 
-			if(!onclose) onclose();
+			if(onclose && typeof onclose === 'function') onclose();
 
-			if(!onclick) onclick();
+			if(onclick && typeof onclick === 'function') onclick();
 		}
 
 		notification.onshow = () => {
@@ -26,7 +29,7 @@ export default class WindowManager{
 				setTimeout(() => {
 					notification.close(); 
 
-					if(onclose !== undefined)
+					if(onclose && typeof onclose === 'function')
 						onclose()
 				}, 2000);
 		}
@@ -69,14 +72,14 @@ export default class WindowManager{
 
 	static autoChangeTheme(){
 		systemPreferences.subscribeNotification(
-		  'AppleInterfaceThemeChangedNotification',
-		  function theThemeHasChanged () {
-		  	let allowAutoChange = store.getState().config.autoDetectTheme;
+		                                        'AppleInterfaceThemeChangedNotification',
+		                                        function theThemeHasChanged () {
+		                                        	let allowAutoChange = store.getState().config.autoDetectTheme;
 
-		  	if(allowAutoChange)
-		    	store.dispatch(setProperty("darkTheme", systemPreferences.isDarkMode()));
-		  }
-		)
+		                                        	if(allowAutoChange)
+		                                        		store.dispatch(setProperties({ darkTheme: systemPreferences.isDarkMode() }));
+		                                        }
+		                                        )
 	}
 
 	static checkIfLaunchAtStartup(){
@@ -85,7 +88,7 @@ export default class WindowManager{
 			path: Native.getAppPath(),
 			isHidden: true
 		}).isEnabled().then(function(isEnabled){
-			store.dispatch(setProperty('launchAtStartup', isEnabled));
+			store.dispatch(setProperties({ launchAtStartup: isEnabled }));
 		})
 	}
 
@@ -100,5 +103,27 @@ export default class WindowManager{
 			ranwallAutoLauncher.enable();
 		else
 			ranwallAutoLauncher.disable(); 
+	}
+
+	static adjustWindow(){
+		if(document.querySelector(".main")){
+			let height = document.querySelector(".main").clientHeight;
+			let width = document.querySelector("body").clientWidth;
+
+			MAIN_WINDOW.setSize(width, height, true);
+		}
+	}
+
+	static registerMagicShortcut(){
+		globalShortcut.unregisterAll();
+
+		let keys = store.getState().config.magicShortcutKeys;
+
+		const ret = globalShortcut.register(keys, () => {
+			WallpaperManager.new(true, true);
+		})
+
+		if (!ret)
+			console.error('registration failed')
 	}
 }

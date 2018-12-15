@@ -7,12 +7,11 @@ export const loadConfig = (data) => (
 	}
 )
 
-export const setProperty = (name, value) => (
+export const setProperties = (values) => (
 	{
-		type: 'SET_PROPERTY',
+		type: 'SET_PROPERTIES',
 		payload: {
-			name: name,
-			value: value
+			values: values
 		}
 	}
 )
