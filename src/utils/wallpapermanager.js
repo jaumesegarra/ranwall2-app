@@ -3,11 +3,12 @@ import Wallsh from './wallsh';
 import WindowManager from './windowmanager';
 
 import { Observable, isObservable, concat, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 import PROVIDERS from '../constants/providers';
 import store from '../store';
 import { setWallpaperLoader, setWallpaperError } from '../actions/application';
-import { setWallpaper } from '../actions/wallpaper';
+import { setWallpaper, markAsCurrentWallpaper } from '../actions/wallpaper';
 
 export function createWallpaperObject () {
 	return {
@@ -182,7 +183,11 @@ export default class WallpaperManager{
 	}
 
 	static set(noSave){
+		let wallpaperName = store.getState().wallpaper.name;
 
+		return setWallpaperToDesktop(wallpaperName, noSave).pipe(tap(res => {
+			store.dispatch(markAsCurrentWallpaper());
+		}));
 	}
 
 	static saveas(){

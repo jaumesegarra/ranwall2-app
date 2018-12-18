@@ -2,8 +2,8 @@ import React from 'react';
 
 import Controls from './Controls/Controls';
 
-export default (newWallpaper, openConfig) => (
-   <div className="header">
+export default (hideWindow, newWallpaper, openConfig) => (
+   <div className="header" onDoubleClick={hideWindow}>
    		<Controls />
 
    		<h1><img src="logoMark.png" title="ranwall: created by Jaume Segarra" alt="Logo"/></h1>

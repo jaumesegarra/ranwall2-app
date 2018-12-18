@@ -4,3 +4,9 @@ export const setWallpaper = (data) => (
 		payload: data
 	}
 )
+
+export const markAsCurrentWallpaper = () => (
+    {
+		type: 'MARK_AS_CURRENT_WALLPAPER'
+	}
+)

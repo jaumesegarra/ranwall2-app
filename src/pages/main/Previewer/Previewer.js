@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { setWallpaperError } from '../../../actions/application';
 
+import PullToRefresh from '../../../utils/PullToRefresh';
 import WallpaperManager from '../../../utils/wallpapermanager';
 import WindowManager from '../../../utils/windowmanager';
 
@@ -21,6 +22,24 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Previewer extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.pullContainer = React.createRef();
+		this.pullElement = React.createRef();
+	}
+
+	componentDidMount() {
+	    let puller = new PullToRefresh(this.pullContainer.current, this.pullElement.current);
+
+	    puller.onStartPull.subscribe(res => {
+	    	// 
+	    });
+
+	    puller.onEndPull.subscribe(res => {
+	    	WallpaperManager.new();
+	    });
+	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 		return this.props.hasError !== nextProps.hasError || this.props.wallpaperName !== nextProps.wallpaperName || this.props.isLoading !== nextProps.isLoading;
@@ -30,8 +49,7 @@ class Previewer extends React.Component {
 		return (this.props.wallpaperName) ? WallpaperManager.getWallpaperSrcPath(this.props.wallpaperName) : null;
 	}
 
-	onLoadWallpaper() {		
-
+	onLoadWallpaper = () => {		
 		if(this.props.wallpaperName && !this.props.isLoading){
 			
 			setTimeout(() => {
@@ -40,7 +58,15 @@ class Previewer extends React.Component {
 		}
 	}
 
-	render = () => Template(this.props.isLoading, this.getWallpaperOutput(), this.onLoadWallpaper(), this.props.hasError);
+	setCurrentWallpaper = () => {
+
+		if(this.props.wallpaperName && !this.props.isLoading)
+			WallpaperManager.set().subscribe();
+	}
+
+	render = () => {
+		return Template(this.pullContainer, this.pullElement, this.props.isLoading, this.getWallpaperOutput(), this.setCurrentWallpaper, this.onLoadWallpaper, this.props.hasError);
+	}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Previewer);

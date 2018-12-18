@@ -5,10 +5,15 @@
 	height: auto;
 	display: block;
 	margin: 0 auto;
-	background-color: #4c4c4c;
+	background-color: #a9a7a7;
 	position: relative;
 	overflow: hidden;
 	
+	body.light &{
+		background-color: #bbb;
+	}
+
+
 	&.loading{
 		animation: fadein 1s infinite linear;
 		animation-delay:0.2s;
