@@ -1,14 +1,23 @@
+.border{
+	border: 1px solid #555;
+    height: calc(100vh - 2px);
+	overflow: hidden;
+
+    body:not(.windows) &{
+    	border-radius: 6px;
+	}
+}
+
 .main{
 	padding: 0px 10px 10px 10px;
 	overflow: hidden;
 	color: #fff;
 	background-color: rgba(35, 42, 47, 0.98); 
-	border-color: #2d2828 !important;
-
+	
 	body.light &{
 		color: #777;
 		background-color: rgba(246, 247, 247, 0.99);
 		background-image: url('../../blur.png');
-		border-color: #dedede !important;
+		border-color: #e8e8e8 !important;
 	}
 }

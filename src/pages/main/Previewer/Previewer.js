@@ -30,7 +30,8 @@ class Previewer extends React.Component {
 	}
 
 	componentDidMount() {
-	    let puller = new PullToRefresh(this.pullContainer.current, this.pullElement.current);
+
+	    let puller = new PullToRefresh(this.pullContainer.current, this.pullElement.current, this.allowPullToRefresh);
 
 	    puller.onStartPull.subscribe(res => {
 	    	// 
@@ -45,6 +46,10 @@ class Previewer extends React.Component {
 		return this.props.hasError !== nextProps.hasError || this.props.wallpaperName !== nextProps.wallpaperName || this.props.isLoading !== nextProps.isLoading;
 	}
 	
+	allowPullToRefresh = () => {
+		return !this.props.isLoading;
+	}
+
 	getWallpaperOutput() {
 		return (this.props.wallpaperName) ? WallpaperManager.getWallpaperSrcPath(this.props.wallpaperName) : null;
 	}

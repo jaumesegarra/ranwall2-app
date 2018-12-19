@@ -107,6 +107,7 @@ export default class WindowManager{
 
 	static adjustWindow(){
 		if(document.querySelector(".main")){
+
 			let height = document.querySelector(".main").clientHeight;
 			let width = document.querySelector("body").clientWidth;
 

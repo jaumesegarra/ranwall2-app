@@ -67,9 +67,11 @@ class MainPage extends React.Component {
 
   render() {
     return (
-            <div className="main">
-            <Header />
-            <Previewer />
+            <div className="border">
+              <div className="main">
+              <Header />
+              <Previewer />
+              </div>
             </div>
           );
   }

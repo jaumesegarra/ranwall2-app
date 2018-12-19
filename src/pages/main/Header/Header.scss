@@ -14,7 +14,14 @@
 		font-size: 14px;
 		width: 100%;
 		cursor: default;
-		z-index: -1
+		z-index: -1;
+		font-weight: 100;
+    	font-family: 'Nova Round', cursive;
+    	color: #d0cece;
+
+    	body.light & {
+			color: #777
+    	}
 	}
 	
 	& > button{

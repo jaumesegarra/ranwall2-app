@@ -6,10 +6,11 @@ const DISTANCE_TO_REFRESH = 40;
 
 export default class PullToRefresh {
 
-	constructor(container, element) {
+	constructor(container, element, isAllowed) {
 
 		this.container = container;
 		this.element = element;
+		this.isAllowed = isAllowed;
 
 		this.onStartPull = new Subject();
 		this.onEndPull = new Subject();
@@ -34,12 +35,14 @@ export default class PullToRefresh {
 	}
 
 	panStart = (event) => {
-		this.onStartPull.next();
+		if(this.isAllowed()){
+			this.onStartPull.next();
 
-		this.pan.startingPositionY = document.body.scrollTop;
+			this.pan.startingPositionY = document.body.scrollTop;
 
-	 	if (this.pan.startingPositionY === 0 )
-	 		this.pan.enabled = true;
+		 	if (this.pan.startingPositionY === 0 )
+		 		this.pan.enabled = true;
+	 	}
 	}
 
 	panDown = (event) => {

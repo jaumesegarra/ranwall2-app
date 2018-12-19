@@ -6,7 +6,7 @@ export default (hideWindow, newWallpaper, openConfig) => (
    <div className="header" onDoubleClick={hideWindow}>
    		<Controls />
 
-   		<h1><img src="logoMark.png" title="ranwall: created by Jaume Segarra" alt="Logo"/></h1>
+   		<h1>ranwall</h1>
 
    		<button id="refresh" title="Refresh" onClick={newWallpaper}>
    			<i className="fa fa-refresh"></i>
