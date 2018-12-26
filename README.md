@@ -13,10 +13,9 @@ Oops you don't like it, well click on refresh button to try with another wallpap
 You can also change the wallpaper with a single command: (`Cmd+Shift+W` on MacOS, `Win+Shift+W` on Windows) but beware of the background you had before. 
 
 ## Download
-Download latest version from [here](https://github.com/jaumesegarra/ranwall-app/releases) (Only for Windows and macos at the moment)
+Download latest version from [here](https://github.com/jaumesegarra/ranwall2-app/releases) (Only for Windows and macos at the moment)
 
 ## Thanks to:
 * [picsum.photos](https://picsum.photos)
 * [unsplash.com](https://unsplash.com)
-* [wallpaperup.com](https://www.wallpaperup.com)
 * [desktoppr.co](https://www.desktoppr.co)
