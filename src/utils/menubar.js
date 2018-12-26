@@ -1,3 +1,4 @@
+import AutoUpdaterManager from './autoupdatermanager';
 import ConfigManager from './configmanager';
 
 const { app, Menu } = window.require('electron').remote;
@@ -10,9 +11,7 @@ const MENU_OPTIONS = [{
 	},
 	{
 		label: 'Check for updates...',
-		click: () => {
-
-		}
+		click: AutoUpdaterManager.checkAgain
 	},
 	{
 		type: 'separator'

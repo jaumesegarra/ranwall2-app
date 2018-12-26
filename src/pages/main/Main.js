@@ -3,15 +3,18 @@ import { connect } from 'react-redux';
 
 import Native, { MACOS } from '../../utils/native';
 import MenuBar from '../../utils/menubar';
+import TouchBar from '../../utils/touchbar';
 import TrayMenu from '../../utils/traymenu';
 import WindowManager from '../../utils/windowmanager';
 import ConfigManager from '../../utils/configmanager';
 import WallpaperManager from '../../utils/wallpapermanager';
+import AutoUpdaterManager from '../../utils/autoupdatermanager';
 
 import './Main.scss';
 
 import Header from './Header/Header';
 import Previewer from './Previewer/Previewer';
+
 
 const mapStateToProps = state => {
   return {
@@ -28,6 +31,7 @@ class MainPage extends React.Component {
     
     if(Native.getSystem() === MACOS){
       MenuBar.create();
+      TouchBar.create();
       WindowManager.autoChangeTheme();
     }
 
@@ -41,6 +45,8 @@ class MainPage extends React.Component {
       WindowManager.hide();
     else
       MAIN_WINDOW.show();
+
+    new AutoUpdaterManager();
 
     WallpaperManager.new();
   }

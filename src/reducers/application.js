@@ -1,6 +1,7 @@
 let defaultState = {
 	isWallpaperLoading: false,
-	hasWallpaperError: false
+	hasWallpaperError: false,
+	isPreviewerActive: false
 }
 
 export default (state = defaultState, action) => {
@@ -9,6 +10,8 @@ export default (state = defaultState, action) => {
 			return {...state, isWallpaperLoading: action.payload.isLoading};
 		case 'SET_WALLPAPER_ERROR':
 			return {...state, hasWallpaperError: action.payload.hasError};
+		case 'SET_PREVIEWER_ACTIVE':
+			return {...state, isPreviewerActive: action.payload.isActive};
 		default: return state
 	}
 }

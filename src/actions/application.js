@@ -15,3 +15,12 @@ export const setWallpaperError = (hasError) => (
 		}
 	}
 )
+
+export const setPreviewerActive = (isActive) => (
+	{
+		type: 'SET_PREVIEWER_ACTIVE',
+		payload: {
+			isActive: isActive
+		}
+	}
+)

@@ -13,6 +13,7 @@ const mapStateToProps = state => {
 	return {
 		isLoading: state.application.isWallpaperLoading,
 		hasError: state.application.hasWallpaperError,
+		isPreviewerActive: state.application.isPreviewerActive,
 		wallpaperName: state.wallpaper.name
 	}
 }
@@ -43,7 +44,12 @@ class Previewer extends React.Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		return this.props.hasError !== nextProps.hasError || this.props.wallpaperName !== nextProps.wallpaperName || this.props.isLoading !== nextProps.isLoading;
+		return (
+		    this.props.hasError !== nextProps.hasError || 
+		    this.props.wallpaperName !== nextProps.wallpaperName || 
+		    this.props.isLoading !== nextProps.isLoading ||
+		    this.props.isPreviewerActive !== nextProps.isPreviewerActive
+		)
 	}
 	
 	allowPullToRefresh = () => {
@@ -70,7 +76,7 @@ class Previewer extends React.Component {
 	}
 
 	render = () => {
-		return Template(this.pullContainer, this.pullElement, this.props.isLoading, this.getWallpaperOutput(), this.setCurrentWallpaper, this.onLoadWallpaper, this.props.hasError);
+		return Template(this.pullContainer, this.pullElement, this.props.isLoading, this.getWallpaperOutput(), this.setCurrentWallpaper, this.onLoadWallpaper, this.props.hasError, this.props.isPreviewerActive);
 	}
 }
 

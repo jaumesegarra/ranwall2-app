@@ -1,0 +1,53 @@
+.actions{
+	position: absolute;
+	bottom: 20px;
+	left: 20px;
+	right: 20px;
+	display: flex;
+	align-items: baseline;
+
+	.info{
+		.previewer:hover & {
+			opacity:0.85;
+		}
+
+		margin-right: auto;
+
+		opacity:0;
+		transition: opacity 0.4s ease-in-out;
+
+		span{
+			font-size: 12px;
+			color: #000;
+			background: rgba(255,255,255,0.6);
+			
+			border-radius: 20px;
+			padding: 5px 10px;
+
+			body.windows &{
+				border-radius: 2px;
+				padding: 4px 8px;
+			}
+
+			& + span{
+				margin-left: 5px
+			}
+		}
+	}
+
+	button {
+		margin-left: 6px;
+		border: 1px dotted #4e88c5;
+
+		i{
+			font-size: 16px;
+		}
+
+		body.windows & {
+			border: none;
+			margin-left: 8px;
+
+			opacity: .9;
+		}
+	}
+}

@@ -7,8 +7,11 @@ import { tap } from 'rxjs/operators';
 
 import PROVIDERS from '../constants/providers';
 import store from '../store';
-import { setWallpaperLoader, setWallpaperError } from '../actions/application';
+import { setWallpaperLoader, setWallpaperError, setPreviewerActive } from '../actions/application';
 import { setWallpaper, markAsCurrentWallpaper } from '../actions/wallpaper';
+
+const { dialog } = window.require('electron').remote;
+const fs = window.require('fs');
 
 export function createWallpaperObject () {
 	return {
@@ -96,7 +99,7 @@ function resizeWallpaper(wallpaper, resolution, forceResize){
 
 function setWallpaperToDesktop(name, noSave = false){
 	return Observable.create(obs => {
-		Wallsh.set(WallpaperManager.getWallpaperOutput(name)).then(() => {
+		Wallsh.set(name).then(() => {
           obs.next(true);
           obs.complete();
 
@@ -106,6 +109,23 @@ function setWallpaperToDesktop(name, noSave = false){
         }, e => obs.error(e));
 	})
 }
+
+function getCurrentDesktopWallpaper(){
+	return Observable.create(obs => {
+		Wallsh.get().then(res => {
+
+			setTimeout(() => {
+				obs.next(res);
+				obs.complete();
+			}, 620);
+
+		}, e => obs.error(e))
+	})
+}
+
+let tmpCurrentWallpaper = null;
+let tmpPreviewUpObs = null;
+let tmpPreviewDownObs = null;
 
 export default class WallpaperManager{
 
@@ -183,14 +203,54 @@ export default class WallpaperManager{
 	}
 
 	static set(noSave){
-		let wallpaperName = store.getState().wallpaper.name;
+		let isLoading = store.getState().application.isWallpaperLoading;
+		if(!isLoading){
+			let wallpaperName = store.getState().wallpaper.name;
 
-		return setWallpaperToDesktop(wallpaperName, noSave).pipe(tap(res => {
-			store.dispatch(markAsCurrentWallpaper());
-		}));
+			return setWallpaperToDesktop(WallpaperManager.getWallpaperOutput(wallpaperName), noSave).pipe(tap(res => {
+				if(!noSave)
+					store.dispatch(markAsCurrentWallpaper());
+			}));
+		}
 	}
 
-	static saveas(){
+	static saveAsDialogIsActive = false;
+	static saveAs(){
 
+		let isLoading = store.getState().application.isWallpaperLoading;
+		if(!isLoading && !WallpaperManager.saveAsDialogIsActive){
+			let wallpaperName = store.getState().wallpaper.name;
+
+			WallpaperManager.saveAsDialogIsActive = true;
+
+			dialog.showSaveDialog(null, {
+				title: 'Save wallpaper as',
+				defaultPath: wallpaperName.toUpperCase(),
+				filters: [{ name: 'Images', extensions: ['jpeg'] }]
+			}, res => {
+				WallpaperManager.saveAsDialogIsActive = false;
+
+				if(res)
+					fs.createReadStream(WallpaperManager.getWallpaperOutput(wallpaperName)).pipe(fs.createWriteStream(res));
+			})
+		}
+	}
+
+	static previewUp(){
+		if(tmpPreviewDownObs) tmpPreviewDownObs.unsubscribe();
+
+		tmpPreviewUpObs = getCurrentDesktopWallpaper().subscribe(res => {
+			tmpCurrentWallpaper = res;
+
+			tmpPreviewUpObs = WallpaperManager.set(true).subscribe(null, null, () => store.dispatch(setPreviewerActive(true)));
+
+		}, err => console.error(err));
+	}
+
+	static previewDown(){
+		if(tmpPreviewUpObs) tmpPreviewUpObs.unsubscribe();
+
+		if(tmpCurrentWallpaper)
+			tmpPreviewDownObs = setWallpaperToDesktop(tmpCurrentWallpaper).subscribe(null, null, () => store.dispatch(setPreviewerActive(false)));
 	}
 }

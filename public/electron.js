@@ -21,7 +21,7 @@ function createWindow () {
 
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../public/index.html')}`);
 
-  //if(isDev)
+  if(isDev)
     mainWindow.openDevTools();
 
   mainWindow.on('closed', function () {

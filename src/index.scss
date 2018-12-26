@@ -56,13 +56,14 @@ button, input[type="button"]{
 	outline: none;
 	text-transform: uppercase;
 	text-decoration: none;
+	padding: 5px 10px;
 
 	&.light {
 		@include with-color(#3e94f1, #fff);
 
 		&.very{
 			@include with-color(#f5f5f5, #4e88c5);
-			border-color: #b3b3b3 !important;
+			border-color: #d0d0d0 !important;
 		}
 	}
 
@@ -86,12 +87,10 @@ button, input[type="button"]{
 	body:not(.windows) &{
 		border-radius: 20px;
 		font-weight: bold;
-		padding: 5px 10px;
 	}
 
 	body.windows &{
-		border-radius: 4px;
-		padding: 4px 8px;
+		border-radius: 2px;
 	}
 }
 

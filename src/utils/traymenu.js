@@ -3,6 +3,7 @@ import store from '../store';
 import Native, { MACOS } from './native';
 import WindowManager from './windowmanager';
 import WallpaperManager from './wallpapermanager';
+import AutoUpdaterManager from './autoupdatermanager';
 import ConfigManager from './configmanager';
 
 const { app, Menu, Tray } = window.require('electron').remote;
@@ -29,9 +30,7 @@ const OPTIONS = [
 	},
 	{
 		label: 'Check for updates', 
-		click: () => {
-
-		}
+		click: AutoUpdaterManager.checkAgain
 	},
 	{
 		label: 'Exit', 

@@ -27,6 +27,12 @@
 	&.hasError{
 		min-height: 120px;
 	}
+	
+	&.previewIsUp img{
+		filter: blur(10px);
+		transition: filter 250ms linear;
+		transform: scale(1.05);
+	}
 
 	img{
 		max-width: 100%;

@@ -1,12 +1,21 @@
 import React from 'react'; 
 
-export default (pullContainer, pullElement, isLoading, wallpaperPath, setCurrentWallpaper, onLoad, hasError) => (
+import Actions from './Actions/Actions';
+
+export default (pullContainer, pullElement, isLoading, wallpaperPath, setCurrentWallpaper, onLoad, hasError, isPreviewerActive) => (
     <div ref={pullContainer}>                                                                                
-        <div className={`previewer ${(isLoading) ? 'loading' : ''} ${(hasError) ? 'hasError' : ''}`} ref={pullElement}>
+        <div className={`previewer ${(isLoading) ? 'loading' : ''} ${(hasError) ? 'hasError' : ''}${(isPreviewerActive) ? 'previewIsUp' : ''}`} ref={pullElement}>
         	{
         		wallpaperPath && (<img src={wallpaperPath} alt="Current downloaded wallpaper" onLoad={onLoad} onMouseDown={() => false} onDoubleClick={setCurrentWallpaper} draggable="false"/>)
         	}
-        	
+        	   
+            {
+                !hasError && !isLoading && wallpaperPath && 
+                (
+                    <Actions />
+                )
+            }
+
         	{
         		hasError &&
     		    	( 
