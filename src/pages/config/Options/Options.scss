@@ -53,6 +53,14 @@
 				display: inline-block;
 			}
 		}
+
+		.flexy{
+			display: flex;
+
+			input{
+				width: 150px
+			}
+		}
 	}
 
 	.space{

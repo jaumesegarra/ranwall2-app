@@ -98,16 +98,18 @@ export default (values, isMacos, providers, setPredefinedResolution, magicShortc
 						<div className="config-option">
 							<label className="block">
 								<span>Magic shortcut:</span>
-								<input type="text" value={magicShortcut.tmpKeys || values.magicShortcutKeys} disabled="disabled"/>
-								<button className={'button'+(magicShortcut.tmpKeys !== null ? ' red': '')} onClick={magicShortcut.record} onBlur={magicShortcut.stop} onKeyUp={magicShortcut.onKeyUp}>
-								{ 
-								  magicShortcut.tmpKeys === null ? (
-									<font><i className="fa fa-microphone"></i> Record</font>
-								  ) : (
-									<font><i className="fa fa-stop"></i> Stop</font>
-								  )
-								}
-								</button>
+								<div className="flexy">
+									<input type="text" value={magicShortcut.tmpKeys || values.magicShortcutKeys} disabled="disabled"/>
+									<button className={'button'+(magicShortcut.tmpKeys !== null ? ' red': '')} onClick={magicShortcut.record} onBlur={magicShortcut.stop} onKeyUp={magicShortcut.onKeyUp}>
+									{ 
+									  magicShortcut.tmpKeys === null ? (
+										<font><i className="fa fa-microphone"></i> Record</font>
+									  ) : (
+										<font><i className="fa fa-stop"></i> Stop</font>
+									  )
+									}
+									</button>
+								</div>
 								<span className="info">Blur input to cancel recording or save. Restart app for apply the new shortcut keys!</span>
 							</label>
 						</div>

@@ -1,6 +1,6 @@
 {
   "name": "ranwall",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "description": "App for set random wallpapers",
   "homepage": "./",
   "repository": "https://github.com/jaumesegarra/ranwall2-app",
@@ -19,6 +19,7 @@
     "auto-launch": "^5.0.5",
     "delete": "^1.1.0",
     "electron-is-dev": "^1.0.1",
+    "electron-updater": "^4.0.6",
     "jimp": "^0.2.28",
     "mkdirp": "^0.5.1",
     "pify": "^3.0.0",
@@ -117,8 +118,20 @@
     "directories": {
       "buildResources": "resources"
     },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": true
+    },
+    "win": {
+      "publish": [
+        "github"
+      ]
+    },
     "mac": {
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "publish": [
+        "github"
+      ]
     }
   },
   "jest": {

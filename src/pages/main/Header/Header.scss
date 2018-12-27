@@ -37,6 +37,13 @@
 
 	body.windows &{
 		flex-direction: row-reverse;
+		
+		h1{
+			width: initial;
+			left: 40px;
+			right: 85px;
+			padding-left: 45px;
+		}
 
 		button#refresh{
 			margin-right: auto;

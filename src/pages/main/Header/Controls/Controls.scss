@@ -88,4 +88,14 @@
 			}
 		}
 	}
+
+	body.windows.light &{
+		button{
+			color: #9a9a9a; 
+
+			&:hover{
+				color: #fff;
+			}
+		}
+	}
 }
