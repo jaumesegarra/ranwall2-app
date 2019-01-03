@@ -1,4 +1,4 @@
-import Native, { MACOS } from './native';
+import Native from './native';
 import WallpaperManager from './wallpapermanager';
 import store from '../store';
 import { setProperties } from '../actions/config';
@@ -7,35 +7,6 @@ const { app, systemPreferences, globalShortcut } = window.require('electron').re
 const autoLaunch = window.require("auto-launch");
 
 export default class WindowManager{
-	
-	static showNotification(title, text, onclick = null, onclose = null, autoclose = true){
-		let notificationConfig = { body: text };
-		
-		if(Native.getSystem() !== MACOS)
-			notificationConfig.icon = Native.getResource("./icon.ico");
-
-		let notification = new Notification(title, notificationConfig);
-
-		notification.onclick = () => {
-			notification.close();
-
-			if(onclose && typeof onclose === 'function') onclose();
-
-			if(onclick && typeof onclick === 'function') onclick();
-		}
-
-		notification.onshow = () => {
-			if(autoclose)
-				setTimeout(() => {
-					notification.close(); 
-
-					if(onclose && typeof onclose === 'function')
-						onclose()
-				}, 2000);
-		}
-
-		return notification;
-	}
 
 	static toggleShow(){
 		if(MAIN_WINDOW.isVisible())
@@ -56,30 +27,36 @@ export default class WindowManager{
 
 	static show(){
 		MAIN_WINDOW.setSkipTaskbar(false);
-		app.dock.show();
+		
+		if(app.dock)
+			app.dock.show();
+		
 		MAIN_WINDOW.show();
 	}
 
 	static hide(showNotification = false){
 		MAIN_WINDOW.setSkipTaskbar(true);
-		app.dock.hide();
+
+		if(app.dock)
+			app.dock.hide();
+
 		MAIN_WINDOW.hide();
 
 		if(showNotification && !WindowManager._hideNotification)
-			WindowManager._hideNotification = WindowManager.showNotification("App is hide!", "This app is hide, click to show!", WindowManager.show, () => delete WindowManager._hideNotification, true);
+			WindowManager._hideNotification = Native.showNotification("App is hide!", "This app is hide, click to show!", WindowManager.show, () => delete WindowManager._hideNotification, true);
 		
 	}
 
 	static autoChangeTheme(){
 		systemPreferences.subscribeNotification(
-		                                        'AppleInterfaceThemeChangedNotification',
-		                                        function theThemeHasChanged () {
-		                                        	let allowAutoChange = store.getState().config.autoDetectTheme;
+		    'AppleInterfaceThemeChangedNotification',
+		    () => {
+		        let allowAutoChange = store.getState().config.autoDetectTheme;
 
-		                                        	if(allowAutoChange)
-		                                        		store.dispatch(setProperties({ darkTheme: systemPreferences.isDarkMode() }));
-		                                        }
-		                                        )
+		        if(allowAutoChange)
+		            store.dispatch(setProperties({ darkTheme: systemPreferences.isDarkMode() }));
+		    }
+		)
 	}
 
 	static checkIfLaunchAtStartup(){
@@ -87,7 +64,7 @@ export default class WindowManager{
 			name: 'ranwall',
 			path: Native.getAppPath(),
 			isHidden: true
-		}).isEnabled().then(function(isEnabled){
+		}).isEnabled().then(isEnabled => {
 			store.dispatch(setProperties({ launchAtStartup: isEnabled }));
 		})
 	}

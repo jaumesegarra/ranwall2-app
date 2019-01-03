@@ -1,9 +1,11 @@
-const {app, BrowserWindow} = require('electron');
+const { app, BrowserWindow } = require('electron');
 
 const path = require('path');
 const isDev = require('electron-is-dev');
 
-let mainWindow
+app.setAppUserModelId("jaumesegarra.ranwall");
+
+let mainWindow;
 
 function createWindow () {
 

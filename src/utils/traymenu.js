@@ -8,7 +8,7 @@ import ConfigManager from './configmanager';
 
 const { app, Menu, Tray } = window.require('electron').remote;
 
-const IMAGE = `./trayIcon_${(Native.getSystem() === MACOS) ? 'macos' : 'win'}.png`;
+const IMAGE = `./trayIcon_${(Native.getSystem() === MACOS) ? 'macos.png' : 'win.ico'}`;
 const OPTIONS = [
 	{
 		label: 'Set new wallpaper!', 
@@ -48,6 +48,9 @@ export default class TrayMenu{
 		contextMenu.items[1].checked = false;
 
 		tray.setContextMenu(contextMenu);
+
+		if(Native.getSystem() !== MACOS)
+			tray.on('click', WindowManager.show);
 
 		TrayMenu._object = tray;
 

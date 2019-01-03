@@ -1,11 +1,15 @@
 import Native from './native';
 
-const { app, dialog } = window.require("electron").remote;
+const { app, dialog, shell } = window.require("electron").remote;
 const { autoUpdater } = window.require("electron").remote.require("electron-updater");
 
 let checker;
 export default class AutoUpdaterManager {
 	constructor(){
+		autoUpdater.channel = "latest";
+
+		//autoUpdater.allowPrerelease = false;
+
 		this.init();
 	}
 
@@ -19,23 +23,28 @@ export default class AutoUpdaterManager {
 
 		autoUpdater.checkForUpdates();
 
-		autoUpdater.on('update-downloaded', (info) => {
-			const dialogOpts = {
-				type: 'info',
-				buttons: ['Restart', 'Later'],
-				title: 'Application Update',
-				message: process.platform === 'win32' ? info.releaseNotes : info.releaseName,
-				detail: 'A new version has been downloaded. Restart the application to apply the updates.'
-			}
+		autoUpdater.on('update-available', (info) => {
+			checker = null;
+			
+			let notification = Native.showNotification(`New version: ${info.releaseName}`, 'Downloading now... Click here for more details.', () => {
+				notification.close();
 
-			dialog.showMessageBox(dialogOpts, (response) => {
-				if (response === 0) autoUpdater.quitAndInstall(true)
-			})
+				shell.openExternal(`https://github.com/jaumesegarra/ranwall2-app/releases/tag/v${info.releaseName}`);
+			}, null, false);
+		});
+
+		autoUpdater.on('update-downloaded', (info) => {
+
+			let notification = Native.showNotification(`Update ${info.releaseName} ready for install.`, 'Click for restart the app now and apply this update.', () => {
+				notification.close();
+
+				autoUpdater.quitAndInstall(true);
+			}, null, false);
 		});
 
 		autoUpdater.on('error', message => {
-		  console.error('There was a problem updating the application')
-		  console.error(message)
+		  console.error('There was a problem updating the application');
+		  console.error(message);
 		});
 
 	}

@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 
+const { Notification } = window.require("electron").remote;
 const path = window.require('path');
 const fs = window.require('fs');
 
@@ -12,7 +13,41 @@ export const DEV_APP_FOLDER_NAME = 'tmpAppFolder';
 
 export default class Native {
 	static isDev(){
-		return (window.__dirname.indexOf("node_modules") !== -1);
+		return window.require("electron").remote.require("electron-is-dev");
+	}
+
+	static showNotification(title, text, onclick = null, onclose = null, autoclose = true){
+		let data = { title: title, body: text };
+		
+		if(Native.getSystem() !== MACOS)
+			data.icon = Native.getResource("./icon.ico");
+
+		let notification = new Notification(data);
+
+		notification.on('click',  () => {
+
+			if(onclick && typeof onclick === 'function') onclick();
+
+			if(!onclick || typeof onclick !== 'function'){
+				notification.close();
+
+				if(onclose && typeof onclose === 'function') onclose();
+			}
+		});
+
+		notification.on('show', () => {
+			if(autoclose)
+				setTimeout(() => {
+					notification.close(); 
+
+					if(onclose && typeof onclose === 'function')
+						onclose()
+				}, 5000);
+		});
+
+		notification.show();
+
+		return notification;
 	}
 
 	static getResource(name){
@@ -91,7 +126,7 @@ export default class Native {
 			let currentWallpaper = localStorage.getItem("currentWallpaper");
 
 			let arrDeletes = [`${folder}/*.jpg`];
-			if(currentWallpaper) arrDeletes.push(`!${folder}/${currentWallpaper}.jpg`);
+			if(currentWallpaper) arrDeletes.push(`!${currentWallpaper}`);
 
 			del(arrDeletes, {force: true}, function(err, deleted) {
 				if (err)
