@@ -15,7 +15,6 @@ import './Main.scss';
 import Header from './Header/Header';
 import Previewer from './Previewer/Previewer';
 
-
 const mapStateToProps = state => {
   return {
     config: state.config
@@ -48,7 +47,12 @@ class MainPage extends React.Component {
 
     new AutoUpdaterManager();
 
-    WallpaperManager.new();
+    if(this.props.config.defineCustomProviders)
+      Native.obtainUserCustomProviders(() => WallpaperManager.new().subscribe());
+    else{
+      localStorage.removeItem("tmpUserCustomProviders");
+      WallpaperManager.new().subscribe();
+    }
   }
 
   componentDidMount = () => {

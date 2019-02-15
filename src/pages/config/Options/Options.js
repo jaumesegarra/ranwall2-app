@@ -2,15 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { setProperties, reset } from '../../../actions/config';
 
-import PROVIDERS from '../../../constants/providers';
-
 import Native, { MACOS } from '../../../utils/native';
 import WindowManager from '../../../utils/windowmanager';
+import WallpaperManager from '../../../utils/wallpapermanager';
 
 import Template from './Options.jsx';
 import './Options.scss';
 
 const { systemPreferences } = window.require("electron").remote;
+
+const ALL_PROVIDERS = WallpaperManager.getAllProviders();
 
 function is_valid_shortcut(ms, ks){	
 	return (ms && ks && ks.length === 2);
@@ -188,6 +189,12 @@ class Options extends React.Component {
 		}
 	}
 
+	openCustomProvidersFile = (e) => {
+		e.preventDefault();
+
+		Native.openUserCustomProviders();
+	}
+
 	resetApp = () => {
 		this.props.resetConfig();
 
@@ -198,12 +205,12 @@ class Options extends React.Component {
 		localStorage.clear();
 	}
 
-	render = () => Template(this.props.config, Native.getSystem() === MACOS, PROVIDERS, this.setPredefinedResolution, {
+	render = () => Template(this.props.config, Native.getSystem() === MACOS, ALL_PROVIDERS, this.setPredefinedResolution, {
 		tmpKeys: (this.state.tmpMagicShortcut) ? this.state.tmpMagicShortcut.text : null,
 		record: this.recordMagicShorcutKeys,
 		stop: this.stopMagicShorcutKeys,
 		onKeyUp: (this.state.tmpMagicShortcut !== null) ? this.onKeyUp : null
-	}, this.resetApp, {
+	}, this.openCustomProvidersFile, this.resetApp, {
 		common: this.setProperty,
 		launchAtStartup: this.setLaunchAtStartup,
 		autoDetectTheme: this.setAutoDetectTheme,

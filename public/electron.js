@@ -18,7 +18,10 @@ function createWindow () {
   	title: "ranwall",
   	icon: "./icon.ico",
   	frame: false,
-    show: false
+    show: false,
+    webPreferences: { 
+      nodeIntegration: true
+    }
   })
 
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../public/index.html')}`);

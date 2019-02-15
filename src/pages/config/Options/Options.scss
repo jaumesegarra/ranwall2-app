@@ -61,6 +61,15 @@
 				width: 150px
 			}
 		}
+		
+		select option.custom{
+			text-decoration: underline;
+    		font-style: italic;
+		}
+
+		button.right{
+			margin-left: 10px
+		}
 	}
 
 	.space{

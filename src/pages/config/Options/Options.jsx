@@ -1,6 +1,6 @@
 import React from 'react'; 
 
-export default (values, isMacos, providers, setPredefinedResolution, magicShortcut, resetApp, setProperty) => (
+export default (values, isMacos, providers, setPredefinedResolution, magicShortcut, openCustomProvidersFile, resetApp, setProperty) => (
     <div className="options">
     	<table border="0">
     		<tbody>
@@ -51,7 +51,7 @@ export default (values, isMacos, providers, setPredefinedResolution, magicShortc
 									<select multiple="multiple" value={values.providers} onChange={setProperty.providers} size={providers.length}>
 										{
 											providers.map(p =>
-												<option key={p.code} value={p.code}>{p.name}</option>
+												<option key={p.code} value={p.code} className={(p.byUser ? 'custom' : '')}>{p.name}</option>
 											)
 										}
 									</select>
@@ -88,7 +88,7 @@ export default (values, isMacos, providers, setPredefinedResolution, magicShortc
 								<input type="checkbox" checked={values.forceWallpaperResize} onChange={(e) => setProperty.common('forceWallpaperResize', e)}/>
 								Force wallpaper resize
 							</label>
-							<span className="info">Blur input to cancel record or save. Restart app for try your custom shortcut!</span>
+							<span className="info">If image obtained not have wished resolution</span>
 						</div>
 					</td>
 				</tr>
@@ -112,6 +112,17 @@ export default (values, isMacos, providers, setPredefinedResolution, magicShortc
 								</div>
 								<span className="info">Blur input to cancel recording or save. Restart app for apply the new shortcut keys!</span>
 							</label>
+						</div>
+						<div className="space"></div>
+						<div className="config-option">
+							<label className="block">
+								<input type="checkbox" checked={values.defineCustomProviders} onChange={(e) => setProperty.common('defineCustomProviders', e)}/>
+								Custom providers
+							</label>
+							<button className="button grey right" onClick={openCustomProvidersFile} disabled={!values.defineCustomProviders}>
+								<font><i className="fa fa-file"></i> Open file</font>
+							</button>
+							<span className="info">Restart the app for apply the changes</span>
 						</div>
 						<div className="space"></div>
 						<div className="config-option">

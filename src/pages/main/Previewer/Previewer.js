@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { setWallpaperError } from '../../../actions/application';
 
 import PullToRefresh from '../../../utils/PullToRefresh';
 import WallpaperManager from '../../../utils/wallpapermanager';
@@ -17,10 +16,6 @@ const mapStateToProps = state => {
 		wallpaperName: state.wallpaper.name
 	}
 }
-
-const mapDispatchToProps = dispatch => ({
-	setError: (hasError) => dispatch(setWallpaperError(hasError))
-})
 
 class Previewer extends React.Component {
 	constructor(props) {
@@ -39,7 +34,7 @@ class Previewer extends React.Component {
 	    });
 
 	    puller.onEndPull.subscribe(res => {
-	    	WallpaperManager.new();
+	    	WallpaperManager.new().subscribe();
 	    });
 	}
 
@@ -76,8 +71,10 @@ class Previewer extends React.Component {
 	}
 
 	render = () => {
-		return Template(this.pullContainer, this.pullElement, this.props.isLoading, this.getWallpaperOutput(), this.setCurrentWallpaper, this.onLoadWallpaper, this.props.hasError, this.props.isPreviewerActive);
+		let loading = (this.props.isLoading || this.props.isLoading === null);
+
+		return Template(this.pullContainer, this.pullElement, loading, this.getWallpaperOutput(), this.setCurrentWallpaper, this.onLoadWallpaper, this.props.hasError, this.props.isPreviewerActive);
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Previewer);
+export default connect(mapStateToProps)(Previewer);

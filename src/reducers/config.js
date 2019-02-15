@@ -10,7 +10,8 @@ let defaultState = {
 	resolution: Native.getScreenResolution(),
 	wallpaperPreview: false,
 	forceWallpaperResize: true,
-	magicShortcutKeys: `${(Native.getSystem() === MACOS) ? 'Command' : 'Win'}+Shift+W`
+	magicShortcutKeys: `${(Native.getSystem() === MACOS) ? 'Command' : 'Win'}+Shift+W`,
+	defineCustomProviders: false
 }
 
 let localData = localStorage.getItem("config");

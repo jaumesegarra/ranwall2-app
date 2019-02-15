@@ -12,7 +12,7 @@ export default class Header extends React.PureComponent {
 	}
 
 	newWallpaper(){
-		WallpaperManager.new();
+		WallpaperManager.new().subscribe();
 	}
 
 	openConfig(){

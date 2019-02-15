@@ -5,7 +5,6 @@ import ConfigPage from './pages/config/Config';
 
 import './App.css';
 
-
 document.addEventListener('dragover', function (event) {
   event.preventDefault();
   return false;

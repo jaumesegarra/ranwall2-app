@@ -1,12 +1,22 @@
 import React from 'react'; 
 
 import Actions from './Actions/Actions';
+import ErrorPannel from './ErrorPannel/ErrorPannel';
 
 export default (pullContainer, pullElement, isLoading, wallpaperPath, setCurrentWallpaper, onLoad, hasError, isPreviewerActive) => (
     <div ref={pullContainer}>                                                                                
         <div className={`previewer ${(isLoading) ? 'loading' : ''} ${(hasError) ? 'hasError' : ''}${(isPreviewerActive) ? 'previewIsUp' : ''}`} ref={pullElement}>
         	{
-        		wallpaperPath && (<img src={wallpaperPath} alt="Current downloaded wallpaper" onLoad={onLoad} onMouseDown={() => false} onDoubleClick={setCurrentWallpaper} draggable="false"/>)
+        		!hasError && wallpaperPath && 
+                (
+                    <img 
+                        src={wallpaperPath} 
+                        alt="Current downloaded wallpaper" 
+                        onLoad={onLoad} onMouseDown={() => false} 
+                        onDoubleClick={setCurrentWallpaper} 
+                        draggable="false"
+                    />
+                )
         	}
         	   
             {
@@ -18,12 +28,9 @@ export default (pullContainer, pullElement, isLoading, wallpaperPath, setCurrent
 
         	{
         		hasError &&
-    		    	( 
-    		    	<div className="on-error">
-    		            <h2>Error trying load wallpaper</h2>
-    		            <p>Will be retry at 10 seconds automatically.</p>
-    		        </div>
-    		        )
+    		    ( 
+    		    	<ErrorPannel />
+    		    )
         	}
         </div>
     </div>

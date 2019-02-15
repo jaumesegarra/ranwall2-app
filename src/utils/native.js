@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-const { Notification } = window.require("electron").remote;
+const { Notification, shell, dialog } = window.require("electron").remote;
 const path = window.require('path');
 const fs = window.require('fs');
 
@@ -10,6 +10,23 @@ export const WIN64 = 2;
 
 export const APP_FOLDER_NAME = '.ranwall2';
 export const DEV_APP_FOLDER_NAME = 'tmpAppFolder';
+export const CUSTOM_PROVIDERS_FILENAME = 'customProviders.config.js';
+
+function providerCodeIsOk(data){
+	let result = true;
+
+	if(
+	   data.indexOf("window") !== -1 || 
+	   data.indexOf("require") !== -1 || 
+	   data.indexOf("document") !== -1 ||
+	   data.indexOf("alert") !== -1 ||
+	   data.indexOf("constructor") !== -1 ||
+	   data.indexOf("eval") !== -1
+	)
+		result = false;
+
+	return result;
+}
 
 export default class Native {
 	static isDev(){
@@ -90,6 +107,46 @@ export default class Native {
 			folder = (window.process.env[(Native.getSystem() === WIN32 || Native.getSystem() === WIN64) ? 'USERPROFILE' : 'HOME'])+"/"+APP_FOLDER_NAME;
 		
 		return folder;
+	}
+
+	static obtainUserCustomProviders(runThen){
+		fs.readFile(path.join(Native.getAppFolder(), CUSTOM_PROVIDERS_FILENAME), 'utf8', function (err, data) {
+		  let codeFileIsGood = providerCodeIsOk(data);
+	      if (err || !codeFileIsGood) {
+	      	localStorage.removeItem("tmpUserCustomProviders");
+
+	      	runThen();
+
+	      	if(!codeFileIsGood){
+	      		// Disable defineCustomProviders 
+	      		setTimeout(() => dialog.showErrorBox("Bad code!", "Sequence not valid in the code of custom providers file."), 200);
+	      	}
+
+	      	return;
+	      }
+	      
+	      localStorage.setItem("tmpUserCustomProviders", data);
+
+	      runThen();
+	    });
+	}
+
+	static openUserCustomProviders(){
+		let filePath = path.join(Native.getAppFolder(), CUSTOM_PROVIDERS_FILENAME);
+
+		if(fs.existsSync(filePath)){
+			shell.openItem(filePath);
+		}else{
+			let readStream = fs.createReadStream(Native.getResource(CUSTOM_PROVIDERS_FILENAME));
+
+			readStream.once('error', (err) => {
+			    console.log(err);
+			});
+
+			readStream.once('end', Native.openUserCustomProviders);
+
+			readStream.pipe(fs.createWriteStream(filePath));
+		}
 	}
 
 	static checkAppFolder(){

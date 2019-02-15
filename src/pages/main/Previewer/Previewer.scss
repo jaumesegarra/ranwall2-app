@@ -26,6 +26,10 @@
 	
 	&.hasError{
 		min-height: 120px;
+		height: calc(100vh - 52px);
+		display: flex;
+	    justify-content: center;
+	    align-items: center;
 	}
 	
 	&.previewIsUp img{
@@ -38,20 +42,6 @@
 		max-width: 100%;
 		height: auto;
 		display: block;
-	}
-	
-	.on-error{
-		position: absolute;
-		padding: 0 15px;
-		color: #e5e8e8;
-
-		h2{
-			margin: 20px 0 10px;
-		}
-
-		p{
-			margin: 0;
-		}
 	}
 }
 

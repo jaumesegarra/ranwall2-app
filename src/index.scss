@@ -39,11 +39,11 @@ button, input[type="button"]{
 		background-color: $backgroundColor;
 		color: $textColor;
 
-		&:active{
+		&:active:not([disabled]){
 			opacity: .8;
 		}
 
-		&:hover{
+		&:hover:not([disabled]){
 			background-color: lighten($backgroundColor, .5%);
 			color: darken($textColor, .5%);
 		}
@@ -81,7 +81,8 @@ button, input[type="button"]{
 	}
 
 	&[disabled]{
-		cursor: default;
+		cursor: not-allowed;
+		opacity: 0.5;
 	}
 
 	body:not(.windows) &{
@@ -142,8 +143,8 @@ input[type="number"]{
 
 	select[multiple]{
 		height: auto;
-		overflow: hidden;
-
+		max-height: 200px;
+		
 		& > option{
 			padding: 9px;
 		}
@@ -153,6 +154,8 @@ input[type="number"]{
 		border-radius: 20px;
 
 		select[multiple]{
+			border-radius: 15px;
+
 			& > option{
 				&:first-child{
 					border-top-left-radius: 15px;

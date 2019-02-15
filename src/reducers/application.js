@@ -1,5 +1,5 @@
 let defaultState = {
-	isWallpaperLoading: false,
+	isWallpaperLoading: null,
 	hasWallpaperError: false,
 	isPreviewerActive: false
 }

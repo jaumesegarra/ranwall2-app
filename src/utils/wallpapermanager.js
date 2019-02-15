@@ -8,9 +8,11 @@ import PROVIDERS from '../constants/providers';
 import store from '../store';
 import { setWallpaperLoader, setWallpaperError, setPreviewerActive } from '../actions/application';
 import { setWallpaper, markAsCurrentWallpaper } from '../actions/wallpaper';
+import { setProperties } from '../actions/config';
 
 const { dialog } = window.require('electron').remote;
 const fs = window.require('fs');
+const request = window.require('request');
 
 export function createWallpaperObject () {
 	return {
@@ -27,42 +29,42 @@ export function createWallpaperObject () {
 let tmpBinImage = null;
 function downloadWallpaper(provider, size, name){
 
-	function loadUrl(url, obs){
-		let request = window.require('request');
+	function getRequest(url, obs, auth = null){
+		let params = {url: url, encoding: null};
 
-		request({url: url, encoding: null}, (err, res, body) => {
+		if(auth) params.auth = auth;
+
+		request(params, (err, res, body) => {
 			if(err)
 				return obs.error(err);
 
-			switch (provider.get.type) {
-				case "json":
+			if(res.statusCode !== 200)
+				return obs.error(res.statusCode);
+			
+			if((res.headers['content-type'] && res.headers['content-type'].indexOf('application/json') >= 0) || (provider.get && provider.get.type === 'json')){
 				let data = JSON.parse(body);
 
-				request({url: provider.get.imgPath(data.response), encoding: null}, (err, res, body) => {
-					if(err)
-						return obs.error(err);
+				if(!provider.get || !provider.get.imgPath)
+					return obs.error('Not defined function to obtain the image path...');
 
-					tmpBinImage = body;
-					obs.next(body);
-					obs.complete();
-				})
-				break;
-				default:
-				tmpBinImage = body;
-				obs.next(body);
-				obs.complete();
+				return getRequest(provider.get.imgPath(data), obs);
 			}
+
+			tmpBinImage = body;
+			obs.next(body);
+			obs.complete();
 		});
 	}
 
 	return Observable.create(obs => {
+		let auth = (provider.get && provider.get.auth) ? provider.get.auth : null;
 
 		let url = provider.url(size); 
 		if(isObservable(url)){
 			url.subscribe(res => {
-				loadUrl(res, obs);
-			}, err => obs.error('Error obtain wallpaper url...'));
-		}else loadUrl(url, obs);
+				getRequest(url, obs, auth);
+			}, err => obs.error(err));
+		}else getRequest(url, obs, auth);
 	});
 }
 
@@ -153,18 +155,51 @@ export default class WallpaperManager{
 		return Math.random().toString(36).substring(4);
 	}
 
-	static getRandomProvider(){
-		const providers = store.getState().config.providers;
-		const providerCode = providers[Math.floor(Math.random() * providers.length)];
+	static getAllProviders(){
+		let userProviders = [];
+		let customProviders = localStorage.getItem("tmpUserCustomProviders");
 
-		return PROVIDERS.find(p => p.code === providerCode);
+		if(customProviders){
+			/* eslint no-new-func: 0 */
+			let obj = Function("'use strict'; "+customProviders)();
+
+		    userProviders = obj.map(o => ({
+		        ...o,
+		    	byUser: true
+		    }));
+	  	};
+
+		return [...PROVIDERS, ...userProviders];
+	}
+
+	static getRandomProvider(){
+		const userProviders = store.getState().config.providers;
+		const providerCode = userProviders[Math.floor(Math.random() * userProviders.length)];
+
+		let p = WallpaperManager.getAllProviders().find(p => p.code === providerCode);
+
+		if(!p){
+			let newProviders = [...userProviders].filter(p => p !== providerCode);
+
+			if(newProviders.length === 0)
+				newProviders = PROVIDERS.map(p => p.code);
+
+			store.dispatch(setProperties({ providers: newProviders}));
+
+			return WallpaperManager.getRandomProvider();
+		}
+
+		return p;
 	}
 
 	static new(autoSet, notification){
 		let isLoading = store.getState().application.isWallpaperLoading;
 		let loadingNotification;
 
-		if(!isLoading){
+		if(isLoading)
+			return of(false);
+
+		return Observable.create(obs => {
 			if(tmpPreviewUpObs) tmpPreviewUpObs.unsubscribe();
 			if(tmpPreviewDownObs) tmpPreviewDownObs.unsubscribe();
 
@@ -186,8 +221,10 @@ export default class WallpaperManager{
 			    (autoSet ? setWallpaperToDesktop(WallpaperManager.getWallpaperOutput(wallpaper.name)) : of(true))
 			);
 
-			observables.subscribe(res => {}, err => {
-				console.error(err);
+			return observables.subscribe(res => {}, err => {
+				console.error(wallpaper.provider.name+': ', err);
+				obs.error(wallpaper.provider.name+': ', err);
+
 				store.dispatch(setWallpaperError(true));
 				store.dispatch(setWallpaperLoader(false));
 			}, comp => {
@@ -201,8 +238,11 @@ export default class WallpaperManager{
 				store.dispatch(setWallpaperError(false));
 				store.dispatch(setWallpaperLoader(false));
 				store.dispatch(setWallpaper(wallpaper));
+
+				obs.next(true);
+				obs.complete();
 			});
-		}
+		});
 	}
 
 	static set(noSave){
