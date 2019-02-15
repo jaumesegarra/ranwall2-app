@@ -17,6 +17,8 @@ You can also change the wallpaper with a single command: (`Cmd+Shift+W` on MacOS
 
 For this reason the use of methods within the file has been limited, for example: window, require, document, alert, etc ...
 
+---
+
 Now you can define your own providers based in a json file. Steps:
 
 **1.** Enable this option (Configuration -> Advanced options -> Custom providers) marking this checkbox. 
