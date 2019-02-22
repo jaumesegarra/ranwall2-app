@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import WallpaperManager from '../../../../utils/wallpapermanager';
@@ -15,43 +15,35 @@ const mapStateToProps = state => {
 
 const RETRY_TIME = 10;
 
-class ErrorPannel extends React.Component {
-	constructor(props){
-		super(props);
+const ErrorPannel = ({ isLoading, hasError }) => {
+	const [ time, setTime ] = useState(RETRY_TIME);
+	let timeUpdater = null;
 
-		this.state = {
-			time: RETRY_TIME
-		};
-		this.interval = setInterval(() => this.subSecondToTime(), 1000);
+	const subSecondToTime = () =>{
+		let currentTime = time;
+
+		if(currentTime > 0)
+			setTime(currentTime-1);
+
+		if(currentTime === 0){
+			
+			WallpaperManager.new().subscribe();
+
+			setTime(RETRY_TIME);
+		}
 	}
 
-	shouldComponentUpdate(nextProps, nextState) {
+	useEffect(() => {
+		return () => clearTimeout(timeUpdater);
+	}, []);
 
-		return (
-		    this.props.isLoading !== nextProps.isLoading || 
-		    this.props.hasError !== nextProps.hasError ||
-		    this.state.time !== nextState.time
-		)
-	}
+	useEffect(() => {
+		if(!isLoading) 
+			timeUpdater = setTimeout(subSecondToTime, 1000);
+	});
+	
+	return Template(time, isLoading);
 
-	subSecondToTime(){
-		let currentTime = this.state.time;
-
-		if(currentTime > 0 && this.props.hasError){
-			this.setState({ time: currentTime-1 });
-
-			if(currentTime === 1)
-				WallpaperManager.new().subscribe();
-
-		}else {
-			this.setState({ time: RETRY_TIME });
-			clearInterval(this.interval);
-		}	
-	}
-
-	render = () => {
-		return Template(this.state.time, this.props.isLoading);
-	}
-}
+};
 
 export default connect(mapStateToProps)(ErrorPannel);

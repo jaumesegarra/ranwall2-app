@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import Native, { MACOS } from '../../utils/native';
@@ -21,70 +21,64 @@ const mapStateToProps = state => {
   }
 }
 
-class MainPage extends React.Component {
-  constructor(props){
-    super(props);
+const changeTheme = (isDark) => {
+  if(isDark)
+    document.body.classList.remove('light');
+  else
+    document.body.classList.add('light');
+}
 
-    WindowManager.checkIfLaunchAtStartup();
-    WindowManager.registerMagicShortcut();
-    
-    if(Native.getSystem() === MACOS){
-      MenuBar.create();
-      TouchBar.create();
-      WindowManager.autoChangeTheme();
-    }
+const loadAtStartup = (config) => {
+  document.title = "ranwall";
 
-    TrayMenu.create();
-    WindowManager.overlayMinimizeEvent();
-    ConfigManager.watcher();
+  WindowManager.checkIfLaunchAtStartup();
+  WindowManager.registerMagicShortcut();
 
-    this.changeTheme(props.config.darkTheme);
-
-    if(this.props.config.hideAtLaunch)
-      WindowManager.hide();
-    else
-      MAIN_WINDOW.show();
-
-    new AutoUpdaterManager();
-
-    if(this.props.config.defineCustomProviders)
-      Native.obtainUserCustomProviders(() => WallpaperManager.new().subscribe());
-    else{
-      localStorage.removeItem("tmpUserCustomProviders");
-      WallpaperManager.new().subscribe();
-    }
+  if(Native.getSystem() === MACOS){
+    MenuBar.create();
+    TouchBar.create();
+    WindowManager.autoChangeTheme();
   }
 
-  componentDidMount = () => {
-    document.title = "ranwall";
-  }
+  TrayMenu.create();
+  WindowManager.overlayMinimizeEvent();
+  ConfigManager.watcher();
 
-  shouldComponentUpdate = (nextProps, nextState) => {
-    return nextProps.config.darkTheme !== this.props.config.darkTheme;
-  }
+  changeTheme(config.darkTheme);
 
-  changeTheme(isDark){
-    if(isDark)
-      document.body.classList.remove('light');
-    else
-      document.body.classList.add('light');
-  }
+  if(config.hideAtLaunch)
+    WindowManager.hide();
+  else
+    MAIN_WINDOW.show();
 
-  componentDidUpdate(prevProps, prevState){
-    if(prevProps.config.darkTheme !== this.props.config.darkTheme)
-      this.changeTheme(this.props.config.darkTheme)
-  }
+  new AutoUpdaterManager();
 
-  render() {
-    return (
-            <div className="border">
-              <div className="main">
-              <Header />
-              <Previewer />
-              </div>
-            </div>
-          );
+  if(config.defineCustomProviders)
+    Native.obtainUserCustomProviders(() => WallpaperManager.new().subscribe());
+  else{
+    localStorage.removeItem("tmpUserCustomProviders");
+    WallpaperManager.new().subscribe();
   }
 }
+
+const MainPage = React.memo(({ config }) => {
+
+  useEffect(() => {
+    loadAtStartup(config);
+  }, []);
+
+  useEffect(() => {
+    changeTheme(config.darkTheme);
+  });
+
+  return (
+    <div className="border">
+      <div className="main">
+        <Header />
+        <Previewer />
+      </div>
+    </div>
+  );
+}, (prevProps, nextProps) => nextProps.config.darkTheme === prevProps.config.darkTheme);
 
 export default connect(mapStateToProps)(MainPage);

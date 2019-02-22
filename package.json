@@ -1,6 +1,6 @@
 {
   "name": "ranwall",
-  "version": "2.0.0-beta.4",
+  "version": "2.0.0-beta.5",
   "description": "App for set random wallpapers",
   "homepage": "./",
   "repository": "https://github.com/jaumesegarra/ranwall2-app",
@@ -30,7 +30,7 @@
     "@svgr/webpack": "2.4.1",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "9.0.0",
-    "babel-jest": "23.6.0",
+    "babel-jest": "^24.1.0",
     "babel-loader": "8.0.4",
     "babel-plugin-named-asset-import": "^0.2.3",
     "babel-preset-react-app": "^6.1.0",
@@ -56,7 +56,7 @@
     "hammerjs": "^2.0.8",
     "html-webpack-plugin": "4.0.0-alpha.2",
     "identity-obj-proxy": "3.0.0",
-    "jest": "23.6.0",
+    "jest": "^24.1.0",
     "jest-pnp-resolver": "1.0.1",
     "jest-resolve": "23.6.0",
     "line-awesome": "^1.0.2",
@@ -68,11 +68,12 @@
     "postcss-loader": "3.0.0",
     "postcss-preset-env": "6.0.6",
     "postcss-safe-parser": "4.0.1",
-    "react": "^16.6.3",
+    "react": "^16.8.2",
     "react-app-polyfill": "^0.1.3",
     "react-dev-utils": "^6.1.1",
-    "react-dom": "^16.6.3",
+    "react-dom": "^16.8.2",
     "react-redux": "^5.1.1",
+    "reactn": "^0.2.2",
     "redux": "^4.0.1",
     "resolve": "1.8.1",
     "rxjs": "^6.3.3",
@@ -117,6 +118,9 @@
     ],
     "directories": {
       "buildResources": "resources"
+    },
+    "nsis": {
+      "perMachine": true
     },
     "win": {
       "publish": [

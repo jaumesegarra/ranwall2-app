@@ -15,14 +15,14 @@ document.addEventListener('drop', function (event) {
   return false;
 }, false);
 
-export default class App extends React.PureComponent {
-
-  render() {
-      switch (window.location.hash.replace('#', '')) {
-        case "config":
-        return (<ConfigPage />);
-        default:
-        return (<MainPage />);
-      }
+const App = () => {
+  
+  switch (window.location.hash.replace('#', '')) {
+    case "config":
+      return (<ConfigPage />);
+    default:
+      return (<MainPage />);
   }
-}
+};
+
+export default App;

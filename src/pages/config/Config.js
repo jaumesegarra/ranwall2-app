@@ -8,21 +8,19 @@ import './Config.scss';
 import Nav from './Nav/Nav';
 import Options from './Options/Options';
 
-export default class ConfigPage extends React.PureComponent {
-  
-  componentDidMount = () => {
-    document.title = "ranwall: Configuration";
+document.title = "ranwall: Configuration";
 
-    if(Native.getSystem() === MACOS)
-      WindowManager.autoChangeTheme();
-  }
+if(Native.getSystem() === MACOS)
+    WindowManager.autoChangeTheme();
 
-  render() {
-    return (
-          <div className="config">
-              <Nav />
-              <Options />
-          </div>
-    );
-  }
-}
+const ConfigPage = (props) => {
+
+  return (
+        <div className="config">
+            <Nav />
+            <Options />
+        </div>
+  );
+};
+
+export default ConfigPage;

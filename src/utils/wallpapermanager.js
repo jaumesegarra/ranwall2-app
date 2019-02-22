@@ -2,7 +2,7 @@ import Native, { DEV_APP_FOLDER_NAME } from './native';
 import Wallsh from './wallsh';
 
 import { Observable, isObservable, concat, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, delay } from 'rxjs/operators';
 
 import PROVIDERS from '../constants/providers';
 import store from '../store';
@@ -89,9 +89,9 @@ function resizeWallpaper(wallpaper, resolution, forceResize){
 	        image.quality(100);
 	        image.write(WallpaperManager.getWallpaperOutput(wallpaper.name), () => {
 	        	obs.next(true);
-	          	obs.complete();
+	        	obs.complete();
 	        });
-	     })
+	    })
 		.catch(err => {
 			obs.error(err);
 		});
@@ -101,13 +101,13 @@ function resizeWallpaper(wallpaper, resolution, forceResize){
 function setWallpaperToDesktop(path, noSave = false){
 	return Observable.create(obs => {
 		Wallsh.set(path).then(() => {
-          obs.next(true);
-          obs.complete();
+			obs.next(true);
+			obs.complete();
 
-          if(!noSave)
-            localStorage.setItem('currentWallpaper', path);
-          
-        }, e => obs.error(e));
+			if(!noSave)
+				localStorage.setItem('currentWallpaper', path);
+
+		}, e => obs.error(e));
 	})
 }
 
@@ -115,10 +115,8 @@ function getCurrentDesktopWallpaper(){
 	return Observable.create(obs => {
 		Wallsh.get().then(res => {
 
-			setTimeout(() => {
-				obs.next(res);
-				obs.complete();
-			}, 620);
+			obs.next(res);
+			obs.complete();
 
 		}, e => obs.error(e))
 	})
@@ -126,7 +124,6 @@ function getCurrentDesktopWallpaper(){
 
 let tmpCurrentWallpaper = null;
 
-let isSettingNewWallpaper = false;
 let tmpPreviewUpObs = null;
 let tmpPreviewDownObs = null;
 
@@ -163,11 +160,11 @@ export default class WallpaperManager{
 			/* eslint no-new-func: 0 */
 			let obj = Function("'use strict'; "+customProviders)();
 
-		    userProviders = obj.map(o => ({
-		        ...o,
-		    	byUser: true
-		    }));
-	  	};
+			userProviders = obj.map(o => ({
+				...o,
+				byUser: true
+			}));
+		};
 
 		return [...PROVIDERS, ...userProviders];
 	}
@@ -192,7 +189,7 @@ export default class WallpaperManager{
 		return p;
 	}
 
-	static new(autoSet, notification){
+	static new(autoSet = false, notification = false){
 		let isLoading = store.getState().application.isWallpaperLoading;
 		let loadingNotification;
 
@@ -215,11 +212,12 @@ export default class WallpaperManager{
 			wallpaper.provider = WallpaperManager.getRandomProvider();
 
 			let observables = concat(	
-			    Native.clearAppFolder(), 
-			    downloadWallpaper(wallpaper.provider, config.resolution, wallpaper.name),
-			    resizeWallpaper(wallpaper, config.resolution, config.forceWallpaperResize),
-			    (autoSet ? setWallpaperToDesktop(WallpaperManager.getWallpaperOutput(wallpaper.name)) : of(true))
-			);
+			                         Native.clearAppFolder(), 
+			                         WallpaperManager.previewDown(),
+			                         downloadWallpaper(wallpaper.provider, config.resolution, wallpaper.name),
+			                         resizeWallpaper(wallpaper, config.resolution, config.forceWallpaperResize),
+			                         (autoSet ? setWallpaperToDesktop(WallpaperManager.getWallpaperOutput(wallpaper.name)) : of(true))
+			                         );
 
 			return observables.subscribe(res => {}, err => {
 				console.error(wallpaper.provider.name+': ', err);
@@ -245,13 +243,12 @@ export default class WallpaperManager{
 		});
 	}
 
-	static set(noSave){
+	static set(noSave = false){
 		let isLoading = store.getState().application.isWallpaperLoading;
 		if(!isLoading){
 			let wallpaperName = store.getState().wallpaper.name;
 
 			if(!noSave){
-				isSettingNewWallpaper = true;
 				if(tmpPreviewUpObs) tmpPreviewUpObs.unsubscribe();
 				if(tmpPreviewDownObs) tmpPreviewDownObs.unsubscribe();
 			}
@@ -260,11 +257,9 @@ export default class WallpaperManager{
 				if(!noSave){
 					store.dispatch(setPreviewerActive(false));
 					store.dispatch(markAsCurrentWallpaper());
-
-					isSettingNewWallpaper = false;
 				}
 			}));
-		}
+		}else return of(false);
 	}
 
 	static saveAsDialogIsActive = false;
@@ -290,24 +285,34 @@ export default class WallpaperManager{
 	}
 
 	static previewUp(){
-		if(!isSettingNewWallpaper){
-			if(tmpPreviewDownObs) tmpPreviewDownObs.unsubscribe();
+		if(tmpPreviewDownObs) tmpPreviewDownObs.unsubscribe();
 
-			tmpPreviewUpObs = getCurrentDesktopWallpaper().subscribe(res => {
-				tmpCurrentWallpaper = res;
+		tmpPreviewUpObs = getCurrentDesktopWallpaper().pipe(delay(560)).subscribe(res => {
+			tmpCurrentWallpaper = res.replace('%20', ' ');
 
-				tmpPreviewUpObs = WallpaperManager.set(true).subscribe(null, null, () => store.dispatch(setPreviewerActive(true)));
+			tmpPreviewUpObs = WallpaperManager.set(true).subscribe(null, null, () => store.dispatch(setPreviewerActive(true)));
 
-			}, err => console.error(err));
-		}	
+		}, err => console.error(err));
 	}
 
 	static previewDown(){
-		if(!isSettingNewWallpaper){
+		function complete(obs, result){
+			obs.next(result);
+			obs.complete();
+		}
+
+		return Observable.create(obs => {
 			if(tmpPreviewUpObs) tmpPreviewUpObs.unsubscribe();
 
-			if(tmpCurrentWallpaper)
-				tmpPreviewDownObs = setWallpaperToDesktop(tmpCurrentWallpaper).subscribe(null, null, () => store.dispatch(setPreviewerActive(false)));
-		}
+			if(tmpCurrentWallpaper){
+				tmpPreviewDownObs = setWallpaperToDesktop(tmpCurrentWallpaper).subscribe(() => {
+					store.dispatch(setPreviewerActive(false));
+
+					tmpCurrentWallpaper = null;
+
+					complete(obs, true);
+				}, err => complete(obs, false));
+			}else complete(obs, false);
+		});
 	}
 }

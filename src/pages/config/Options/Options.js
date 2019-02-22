@@ -1,5 +1,6 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import { useState } from 'react';
+
+import { connect } from 'react-redux';
 import { setProperties, reset } from '../../../actions/config';
 
 import Native, { MACOS } from '../../../utils/native';
@@ -28,27 +29,17 @@ const mapDispatchToProps = dispatch => ({
 	resetConfig: () => dispatch(reset())
 });
 
-class Options extends React.Component {
-	constructor(props){
-		super(props);
+const Config = ({ config, setProperties, resetConfig }) => {
+	const [tmpMagicShortcut, setTmpMagicShortcut] = useState(null);
 
-		this.state = {
-			tmpMagicShortcut: null	
-		}
-	}
-
-	shouldComponentUpdate = (nextProps, nextState) => {
-		return nextProps.config !== this.props.config || nextState.tmpMagicShortcut !== this.state.tmpMagicShortcut;
-	}
-
-	setLaunchAtStartup = (e)=> {
+	const setLaunchAtStartup = (e) => {
 		let value = e.target.checked;
 
 		WindowManager.launchAtStartup(value);
-		this.props.setProperties({ launchAtStartup: value});
+		setProperties({ launchAtStartup: value});
 	}
 
-	setAutoDetectTheme = (e)=> {
+	const setAutoDetectTheme = (e)=> {
 		let value = e.target.checked;
 
 		let properties = { autoDetectTheme: value };
@@ -56,10 +47,10 @@ class Options extends React.Component {
 		if(value)
 			properties.darkTheme = systemPreferences.isDarkMode();
 
-		this.props.setProperties(properties);
+		setProperties(properties);
 	}
 
-	setProviders = (e) => {
+	const setProviders = (e) => {
 		let options = e.target.options;
 		
 		let value = [];
@@ -69,19 +60,19 @@ class Options extends React.Component {
 				value.push(options[i].value);
 
 		if(value.length > 0)
-			this.props.setProperties({ providers: value });
+			setProperties({ providers: value });
 			
 	}
 
-	setResolution = (pos, e) => {
+	const setResolution = (pos, e) => {
 		let value = e.target.value;
 
-		let resolution = this.props.config.resolution;
+		let resolution = config.resolution;
 		resolution[pos] = +value;
-		this.props.setProperties({ resolution: resolution });
+		setProperties({ resolution: resolution });
 	}
 
-	setPredefinedResolution = opt => {
+	const setPredefinedResolution = opt => {
 		let value;
 
 		switch (opt) {
@@ -98,20 +89,20 @@ class Options extends React.Component {
 			break;
 		}
 
-		this.props.setProperties({ resolution: value });
+		setProperties({ resolution: value });
 	}
 
-	setProperty = (name, e) => {
+	const setProperty = (name, e) => {
 		let target = e.target;
 		let value = target.type === 'checkbox' ? target.checked : target.value;
 
-		this.props.setProperties({ [name]: value });
+		setProperties({ [name]: value });
 	}
 
-	onKeyUp = (e) => {
+	const onKeyUp = (e) => {
 		e.preventDefault();
 
-		let { modifiers, key } = this.state.tmpMagicShortcut;
+		let { modifiers, key } = tmpMagicShortcut;
 
 		let keyPressed = e.key.replace("Meta", "Command")
 
@@ -148,75 +139,70 @@ class Options extends React.Component {
 		}
 
 		if(is_valid_shortcut(key, modifiers)){
-			this.props.setProperties({ magicShortcutKeys: text });
-			this.stopMagicShorcutKeys();
+			setProperties({ magicShortcutKeys: text });
+			stopMagicShorcutKeys();
 		}
 		else
-			this.setState({
-				tmpMagicShortcut: {
-					key: key,
-					modifiers: modifiers,
-					text: text
-				}
+			setTmpMagicShortcut({
+				key: key,
+				modifiers: modifiers,
+				text: text
 			});
 	}
 
-	recordMagicShorcutKeys = () => {
-		if(!this.state.tmpMagicShortcut){
-			this.setState({
-				tmpMagicShortcut: {
-					key: null,
-					modifiers: [],
-					text: '- - -'
-				}
+	const recordMagicShorcutKeys = () => {
+		if(!tmpMagicShortcut){
+			setTmpMagicShortcut({
+				key: null,
+				modifiers: [],
+				text: '- - -'
 			});
-		}else this.stopMagicShorcutKeys();
+		}else stopMagicShorcutKeys();
 	}
 
-	stopMagicShorcutKeys = (e) => {
-		if(this.state.tmpMagicShortcut){
+	const stopMagicShorcutKeys = (e) => {
+		if(tmpMagicShortcut){
 			if(e){
-				let { modifiers, key, text } = this.state.tmpMagicShortcut;
+				let { modifiers, key, text } = tmpMagicShortcut;
 
 				if(is_valid_shortcut(key, modifiers)){
-					this.props.setProperties({ magicShortcutKeys: text });
+					setProperties({ magicShortcutKeys: text });
 				}
 			}
 
-			this.setState({
-				tmpMagicShortcut: null
-			});
+			setTmpMagicShortcut(null);
 		}
 	}
 
-	openCustomProvidersFile = (e) => {
+	const openCustomProvidersFile = (e) => {
 		e.preventDefault();
 
 		Native.openUserCustomProviders();
 	}
 
-	resetApp = () => {
-		this.props.resetConfig();
+	const resetApp = () => {
+		resetConfig();
 
-		Native.clearAppFolder().subscribe(res => {
-			console.log('IT WORKS!');
-		}, err => console.error(err));
+		Native.clearAppFolder().subscribe(res => {}, err => console.error(err));
 
 		localStorage.clear();
 	}
 
-	render = () => Template(this.props.config, Native.getSystem() === MACOS, ALL_PROVIDERS, this.setPredefinedResolution, {
-		tmpKeys: (this.state.tmpMagicShortcut) ? this.state.tmpMagicShortcut.text : null,
-		record: this.recordMagicShorcutKeys,
-		stop: this.stopMagicShorcutKeys,
-		onKeyUp: (this.state.tmpMagicShortcut !== null) ? this.onKeyUp : null
-	}, this.openCustomProvidersFile, this.resetApp, {
-		common: this.setProperty,
-		launchAtStartup: this.setLaunchAtStartup,
-		autoDetectTheme: this.setAutoDetectTheme,
-		providers: this.setProviders,
-		resolution: this.setResolution
+	return Template(config, Native.getSystem() === MACOS, ALL_PROVIDERS, setPredefinedResolution, {
+		tmpKeys: (tmpMagicShortcut) ? tmpMagicShortcut.text : null,
+		record: recordMagicShorcutKeys,
+		stop: stopMagicShorcutKeys,
+		onKeyUp: (tmpMagicShortcut !== null) ? onKeyUp : null
+	}, openCustomProvidersFile, resetApp, {
+		common: setProperty,
+		launchAtStartup: setLaunchAtStartup,
+		autoDetectTheme: setAutoDetectTheme,
+		providers: setProviders,
+		resolution: setResolution
 	});
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Options);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Config);

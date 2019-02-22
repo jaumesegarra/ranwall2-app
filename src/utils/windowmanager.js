@@ -98,7 +98,7 @@ export default class WindowManager{
 		let keys = store.getState().config.magicShortcutKeys;
 
 		const ret = globalShortcut.register(keys, () => {
-			WallpaperManager.new(true, true);
+			WallpaperManager.new(true, true).subscribe();
 		})
 
 		if (!ret)

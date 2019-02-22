@@ -1,23 +1,31 @@
 import React from 'react';
 import './Header.scss';
-import Template from './Header.jsx';
 
 import WindowManager from '../../../utils/windowmanager';
 import WallpaperManager from '../../../utils/wallpapermanager';
 import ConfigManager from '../../../utils/configmanager';
 
-export default class Header extends React.PureComponent {
-	hideWindow() {
-		WindowManager.hide(true);
-	}
+import Controls from './Controls/Controls';
 
-	newWallpaper(){
-		WallpaperManager.new().subscribe();
-	}
+const Header = () => {
+	const hideWindow = () => WindowManager.hide(true);
+	const newWallpaper = () => WallpaperManager.new().subscribe();
+	const openConfig = () => ConfigManager.openWindow();
 
-	openConfig(){
-		ConfigManager.openWindow();
-	}
+	return (
+	   <div className="header" onDoubleClick={hideWindow}>
+	   		<Controls />
 
-	render = () => Template(this.hideWindow, this.newWallpaper, this.openConfig);
+	   		<h1>ranwall</h1>
+
+	   		<button id="refresh" title="Refresh" onClick={newWallpaper}>
+	   			<i className="fa fa-refresh"></i>
+	   		</button>
+	        <button id="config" title="Configuration" onClick={openConfig}>
+	        	<i className="fa fa-cog"></i>
+	        </button>
+	   </div>
+	);
 }
+
+export default Header;

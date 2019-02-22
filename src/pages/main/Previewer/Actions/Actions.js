@@ -1,4 +1,3 @@
-import React from 'react';
 import { connect } from 'react-redux';
 
 import WallpaperManager from '../../../../utils/wallpapermanager';
@@ -14,38 +13,28 @@ const mapStateToProps = state => {
 	}
 }
 
-class Actions extends React.Component {
-	shouldComponentUpdate(nextProps, nextState) {
-		return (
-		    this.props.wallpaper !== nextProps.wallpaper || 
-		    this.props.wallpaper.wasSetAsWallpaper !== nextProps.wallpaper.wasSetAsWallpaper || 
-		    this.props.resolution !== nextProps.resolution ||
-		    this.props.wallpaperPreview !== nextProps.wallpaperPreview 
-		);
-	}
+const Actions = ({ wallpaper, resolution, wallpaperPreview }) => {
 
-	isDesiredSize = WallpaperManager.isDesiredResolution(this.props.wallpaper.originalResize, this.props.resolution);
+	const isDesiredSize = WallpaperManager.isDesiredResolution(wallpaper.originalResize, resolution);
 
-	setWallpaper = () => {
+	const setWallpaper = () => {
 		WallpaperManager.set().subscribe();
 	}
 
-	saveAs = () => {
+	const saveAs = () => {
 		WallpaperManager.saveAs();
 	}
 
-	previewUp = () => {
-		if(this.props.wallpaperPreview)
+	const previewUp = () => {
+		if(wallpaperPreview)
 			WallpaperManager.previewUp();
 	}  
 
-	previewDown = () => {
-		WallpaperManager.previewDown();
+	const previewDown = () => {
+		WallpaperManager.previewDown().subscribe();
 	}
 
-	render = () => {
-		return Template(this.props.wallpaper, this.isDesiredSize, this.setWallpaper, this.saveAs, this.previewUp, this.previewDown);
-	}
+	return Template(wallpaper, isDesiredSize, setWallpaper, saveAs, previewUp, previewDown);
 }
 
 export default connect(mapStateToProps)(Actions);

@@ -1,25 +1,35 @@
 import React from 'react';
 import './Controls.scss';
-import Template from './Controls.jsx';
 import WindowManager from '../../../../utils/windowmanager';
 
 const { app } = window.require('electron').remote;
 
-export default class Controls extends React.Component {
-
-	shouldComponentUpdate(nextProps, nextState) {
-		return false;
-	}
+const Controls = () => {
 	
-	close(e){
-		e.preventDefault();
+	const close = (event) => {
+		event.preventDefault();
 		app.exit();
 	}
 
-	minimize(e){
-		e.preventDefault();
+	const minimize = (event) => {
+		event.preventDefault();
 		WindowManager.hide(true);
 	}
 
-	render = () => Template(this.close, this.minimize);
+	return (
+	   <div className="controls">
+	   		<button id="close" title="Close" onClick={close}>
+	   			<span>
+	   				&times;
+	   			</span>
+	   		</button>
+	    	<button id="minimize" title="Minimize" onClick={minimize}>
+	    		<span>
+	    			&ndash;
+	    		</span>
+	    	</button>
+	   </div>
+	);
 }
+
+export default Controls;

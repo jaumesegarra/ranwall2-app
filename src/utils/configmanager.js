@@ -26,7 +26,10 @@ export default class ConfigManager {
 				height: 310,
 				resizable:false,
 				fullscreen: false,
-				show: false
+				show: false,
+				webPreferences: { 
+			      nodeIntegration: true
+			    }
 			});
 			configWindow.loadURL((Native.isDev() ? 'http://localhost:3000' : `file://${Native.getResource('index.html')}`) + '#config');
 
