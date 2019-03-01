@@ -8,4 +8,9 @@
 	a + a {
 		margin-left: 5px
 	} 
+
+	body.windows &{
+		padding-top: 10px;
+		margin-bottom: 10px
+	}
 }

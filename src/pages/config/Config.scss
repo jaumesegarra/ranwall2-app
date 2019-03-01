@@ -1,6 +1,13 @@
 .config{
-	background: #f2f2f2;
 	color: #000;
 	overflow: hidden;
 	height: 100vh;
+	
+	body:not(.windows) &{
+		background: #f2f2f2;
+	}
+
+	body.windows &{
+		background: #fff
+	}
 }

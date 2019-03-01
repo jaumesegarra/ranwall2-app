@@ -22,7 +22,7 @@ export default class ConfigManager {
 		if(!configWindow){
 			configWindow = new BrowserWindow({
 				title: 'ranwall: Configuration',
-				width: 485,
+				width: 495,
 				height: 310,
 				resizable:false,
 				fullscreen: false,

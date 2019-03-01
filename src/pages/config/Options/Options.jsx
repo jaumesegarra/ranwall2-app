@@ -21,7 +21,7 @@ export default (values, isMacos, providers, setPredefinedResolution, magicShortc
 						</div>
 					</td>
 				</tr>
-				<tr id="look">
+				<tr id="theme">
 					<td><h2>Theme:</h2></td>
 					<td>
 						{ isMacos && (

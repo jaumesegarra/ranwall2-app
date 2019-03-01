@@ -8,7 +8,7 @@ export default class AutoUpdaterManager {
 	constructor(){
 		autoUpdater.channel = "latest";
 
-		//autoUpdater.allowPrerelease = false;
+		autoUpdater.allowPrerelease = false;
 
 		this.init();
 	}

@@ -11,7 +11,7 @@ function createWindow () {
 
   mainWindow = new BrowserWindow({
   	width: 710, 
-  	height: 410,
+  	height: 425,
   	resizable: false,
   	fullscreen: false,
   	transparent: true,

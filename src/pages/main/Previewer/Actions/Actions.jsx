@@ -16,7 +16,7 @@ export default (wallpaper, isDesiredSize, setWallpaper, saveAs, previewUp, previ
 
    		{
    			!wallpaper.wasSetAsWallpaper && (
-   			   <button className="button light" title="Set wallpaper" onClick={setWallpaper} onMouseEnter={previewUp} onMouseLeave={previewDown}>set</button>
+   			   <button className="button light" title="Set wallpaper" onClick={setWallpaper} onMouseEnter={previewUp} onMouseLeave={previewDown}>Set</button>
    			)
    		}
    </div>

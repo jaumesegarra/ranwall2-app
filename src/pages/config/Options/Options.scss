@@ -1,6 +1,17 @@
 .config .options{
-	height: calc(100vh - 53px);
 	overflow: auto;
+	
+	body:not(.windows) &{
+		height: calc(100vh - 53px);
+	}
+
+	body.windows &{
+		height: calc(100vh - 65px);
+
+		#theme .config-option{
+			margin-bottom: 5px;
+		}
+	}
 
 	table{
 		width: calc(100% - 25px);
@@ -46,7 +57,7 @@
 
 		&.resolution{
 			input{
-				width: 50px;
+				width: 48px;
 			}
 
 			span.x{

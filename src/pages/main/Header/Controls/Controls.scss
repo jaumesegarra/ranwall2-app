@@ -92,9 +92,14 @@
 	body.windows.light &{
 		button{
 			color: #9a9a9a; 
+			
+			&:not(#close):hover{
+				background-color: #e2e2e2;
+			}
 
-			&:hover{
+			&#close:hover{
 				color: #fff;
+				background-color: #ec3030;
 			}
 		}
 	}
