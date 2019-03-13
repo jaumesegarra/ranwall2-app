@@ -29,6 +29,7 @@ export function createWallpaperObject () {
 let tmpBinImage = null;
 function downloadWallpaper(provider, size, name){
 
+	let times = 0;
 	function getRequest(url, obs, auth = null){
 		let params = {url: url, encoding: null};
 
@@ -41,8 +42,11 @@ function downloadWallpaper(provider, size, name){
 			if(res.statusCode !== 200)
 				return obs.error(res.statusCode);
 			
-			if((res.headers['content-type'] && res.headers['content-type'].indexOf('application/json') >= 0) || (provider.get && provider.get.type === 'json')){
-				let data = JSON.parse(body);
+			if((res.headers['content-type'] && res.headers['content-type'].indexOf('application/json') >= 0) || (times === 0 && provider.get && provider.get.type === 'json')){
+				let data;
+				try{
+					data = JSON.parse(body);
+				}catch(e) { return obs.error('Invalid JSON returned'); }
 
 				if(!provider.get || !provider.get.imgPath)
 					return obs.error('Not defined function to obtain the image path...');
@@ -50,6 +54,7 @@ function downloadWallpaper(provider, size, name){
 				return getRequest(provider.get.imgPath(data), obs);
 			}
 
+			times++;
 			tmpBinImage = body;
 			obs.next(body);
 			obs.complete();

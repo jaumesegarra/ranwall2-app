@@ -61,6 +61,6 @@ Download latest version from [here](https://github.com/jaumesegarra/ranwall2-app
 ## Thanks to:
 * [picsum.photos](https://picsum.photos)
 * [unsplash.com](https://unsplash.com)
+* [desktoppr.co](https://www.desktoppr.co)
 * [loremFlickr.com](https://loremFlickr.com) 
 * [splashbase.co](http://www.splashbase.co) 
-* [desktoppr.co](https://www.desktoppr.co): Now are down 😥

@@ -9,6 +9,14 @@ export default [{
 	"url": res => `https://source.unsplash.com/random/${res[0]}x${res[1]}`
 },
 {
+	"code": "DSKPR",
+	"name": "desktoppr.co *",
+	"url": res => `https://api.desktoppr.co/1/wallpapers/random`,
+	"get": {
+		"imgPath": data => data.response.image.url
+	}
+},
+{
 	"code": "FLCK",
 	"name": "loremFlickr.com *",
 	"url": res => `https://loremflickr.com/${res[0]}/${res[1]}`
