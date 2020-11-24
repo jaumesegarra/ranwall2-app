@@ -3,7 +3,7 @@ import WallpaperManager from './wallpapermanager';
 import store from '../store';
 import { setProperties } from '../actions/config';
 
-const { app, systemPreferences, globalShortcut } = window.require('electron').remote;
+const { app, systemPreferences, nativeTheme, globalShortcut } = window.require('electron').remote;
 const autoLaunch = window.require("auto-launch");
 
 export default class WindowManager{
@@ -54,7 +54,7 @@ export default class WindowManager{
 		        let allowAutoChange = store.getState().config.autoDetectTheme;
 
 		        if(allowAutoChange)
-		            store.dispatch(setProperties({ darkTheme: systemPreferences.isDarkMode() }));
+		            store.dispatch(setProperties({ darkTheme: nativeTheme.shouldUseDarkColors }));
 		    }
 		)
 	}

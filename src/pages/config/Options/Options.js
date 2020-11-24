@@ -10,7 +10,7 @@ import WallpaperManager from '../../../utils/wallpapermanager';
 import Template from './Options.jsx';
 import './Options.scss';
 
-const { systemPreferences } = window.require("electron").remote;
+const { nativeTheme } = window.require("electron").remote;
 
 const ALL_PROVIDERS = WallpaperManager.getAllProviders();
 
@@ -45,7 +45,7 @@ const Config = ({ config, setProperties, resetConfig }) => {
 		let properties = { autoDetectTheme: value };
 
 		if(value)
-			properties.darkTheme = systemPreferences.isDarkMode();
+			properties.darkTheme = nativeTheme.shouldUseDarkColors
 
 		setProperties(properties);
 	}
