@@ -12,7 +12,7 @@
     "predist": "npm run build",
     "dist": "electron-builder",
     "preship": "npm run build",
-    "ship": "build -mw -p always"
+    "ship": "electron-builder -mw -p always"
   },
   "postinstall": "electron-builder install-app-deps",
   "dependencies": {
