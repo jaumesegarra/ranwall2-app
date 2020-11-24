@@ -28,7 +28,8 @@ export default class ConfigManager {
 				fullscreen: false,
 				show: false,
 				webPreferences: { 
-			      nodeIntegration: true
+				  nodeIntegration: true,
+				  enableRemoteModule: true
 			    }
 			});
 			configWindow.loadURL((Native.isDev() ? 'http://localhost:3000' : `file://${Native.getResource('index.html')}`) + '#config');
